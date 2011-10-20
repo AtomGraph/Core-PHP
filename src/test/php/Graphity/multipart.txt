@@ -1,0 +1,138 @@
+-----------------------------209043165826383
+Content-Disposition: form-data; name="view"
+
+create
+-----------------------------209043165826383
+Content-Disposition: form-data; name="rdf"
+
+
+-----------------------------209043165826383
+Content-Disposition: form-data; name="su"
+
+http://example.org/post/2011/08/10
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://purl.org/dc/elements/1.1/title
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ol"
+
+neeea'pfksd;lfkasdfl;skd
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ll"
+
+da
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://purl.org/dc/elements/1.1/subject
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ou"
+
+http://example.org/tags/
+-----------------------------209043165826383
+Content-Disposition: form-data; name="su"
+
+http://example.org/tags/
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ou"
+
+http://semantic-web.dk/ontologies/YOUR_PROJECT#Keyword
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://www.w3.org/2004/02/skos/core#prefLabel
+-----------------------------209043165826383
+Content-Disposition: form-data; name="tags"
+
+
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ll"
+
+da
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://xmlns.com/foaf/0.1/depiction
+-----------------------------209043165826383
+Content-Disposition: form-data; name="xxx"; filename="temp.txt"
+Content-Type: text/plain
+
+short
+temp
+file
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://xmlns.com/foaf/0.1/thumbnail
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ol"; filename=""
+Content-Type: application/octet-stream
+
+
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://semantic-web.dk/ontologies/YOUR_PROJECT#icon
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ol"; filename=""
+Content-Type: application/octet-stream
+
+
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ou"
+
+http://semantic-web.dk/ontologies/YOUR_PROJECT#StripPost
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://rdfs.org/sioc/ns#has_container
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ou"
+
+http://example.org/posts
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://purl.org/dc/elements/1.1/title
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ol"
+
+Title
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ll"
+
+da
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://rdfs.org/sioc/ns#content
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ol"
+
+Content
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ll"
+
+da
+-----------------------------209043165826383
+Content-Disposition: form-data; name="pu"
+
+http://purl.org/dc/elements/1.1/issued
+-----------------------------209043165826383
+Content-Disposition: form-data; name="ol"
+
+2011-08-10
+-----------------------------209043165826383
+Content-Disposition: form-data; name="lt"
+
+http://www.w3.org/2001/XMLSchema#date
+-----------------------------209043165826383--

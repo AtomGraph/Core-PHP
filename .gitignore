@@ -1,0 +1,8 @@
+.DS_*
+logs
+.settings
+.buildpath
+.project
+dummy.php
+tags
+chromedriver.log
