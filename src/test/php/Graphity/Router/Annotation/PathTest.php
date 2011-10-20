@@ -4,7 +4,7 @@ namespace Graphity\Tests\Router\Annotation;
 
 use Graphity;
 
-if(!defined(GRAPHITYDIR)) {
+if(!defined('GRAPHITYDIR')) {
     define('GRAPHITYDIR', ROOTDIR . DS . "src" . DS . "main" . DS . "php");
 }
 
