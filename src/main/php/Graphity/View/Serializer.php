@@ -8,6 +8,8 @@
  * @link		http://www.xml.lt
  */
 
+namespace HeltNormalt\View;
+
 abstract class Serializer
 {
 

@@ -7,7 +7,7 @@
  * @link		http://www.xml.lt
  */
 
-namespace Graphity;
+namespace Graphity\View;
 
 class ContentType
 {
