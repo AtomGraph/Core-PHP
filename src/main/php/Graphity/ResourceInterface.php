@@ -1,36 +1,48 @@
 <?php
 
+/**
+ *  Copyright 2011 Graphity Team
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  @package        graphity
+ *  @author         Martynas Jusevičius <pumba@xml.lt>
+ *  @link           http://graphity.org/
+ */
+
 namespace Graphity;
 
 interface ResourceInterface
 {
+    /**
+     *  @see vhost.conf
+     *
+     *  This is required for multpart/form-data request parsing.
+     */
     const MULTIPART_FORM = "multipart/form-data-alternate"; // comes from vhost.conf
 
-    // same as getAbsolutePath()
+    /**
+     *  Return current resource URI.
+     *
+     *  @return string
+     */
     function getURI();
 
-    // Get the path of the current request relative to the base URI as a string
+    /**
+     *  Get the path of the current request relative to the base URI as a string
+     *
+     *  @return string
+     */
     function getPath();
-
-    // Get the path segment.
-    //function getPathSegment();
-    
-
-    //function getController();
-
-    //function setController(Controller $controller);
-
-    //function getResponse();
-
-    //function setResponse(Response $response);
-
-    //function doGet(Request $request, Response $response);
-
-    //function doPost(Request $request, Response $response);
-
-    //function doPut(Request $request, Response $response);
-
-    //function doDelete(Request $request, Response $response);
-
 }
 
