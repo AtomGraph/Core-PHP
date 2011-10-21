@@ -96,6 +96,11 @@ class Router
      */
     public function matchPath($path)
     {
+        $path = rtrim($path, "/");
+        if($path == "") {
+            $path = "/";
+        }
+
         foreach($this->routes as $className => $info) {
             if(preg_match($info['matchPath'], $path) === 1) {
                 return $className;
@@ -141,11 +146,6 @@ class Router
         
         if($path === false) {
             throw new RuntimeException("Could not parse URI: '{$request->getRequestURI()}'.");
-        }
-
-        $path = rtrim($path, "/");
-        if($path == "") {
-            $path = "/";
         }
 
         return $this->matchPath($path);
