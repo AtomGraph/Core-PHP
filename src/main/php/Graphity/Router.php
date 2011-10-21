@@ -143,6 +143,11 @@ class Router
             throw new RuntimeException("Could not parse URI: '{$request->getRequestURI()}'.");
         }
 
+        $path = rtrim($path, "/");
+        if($path == "") {
+            $path = "/";
+        }
+
         return $this->matchPath($path);
     }
 
