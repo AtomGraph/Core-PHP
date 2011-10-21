@@ -135,9 +135,9 @@ class Loader
             }
             $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . $this->_fileExtension;
 
-            if(file_exists(($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName) === false) {
-                throw new \RuntimeException("Could not load: '{$className}'.");
-            }
+            //if(file_exists(($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName) === false) {
+            //    throw new \RuntimeException("Could not load: '{$className}'.");
+            //}
 
             require ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
         }
