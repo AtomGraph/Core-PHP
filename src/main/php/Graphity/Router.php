@@ -79,7 +79,7 @@ class Router
         $path = parse_url($uri, PHP_URL_PATH);
         
         if($path === false) {
-            throw new RuntimeException("Could not parse URI: '{$uri}'.");
+            throw new \RuntimeException("Could not parse URI: '{$uri}'.");
         }
 
         return $this->matchPath($path);
@@ -123,7 +123,7 @@ class Router
     {
         $className = $this->matchRequest($request);
         if($className === null) {
-            throw new RuntimeException("Could not map route to resource: '{$request->getRequestURI()}'.");
+            throw new \RuntimeException("Could not map route to resource: '{$request->getRequestURI()}'.");
         }
 
         $resource = new $className($request, $this);
@@ -145,7 +145,7 @@ class Router
         $path = parse_url($request->getRequestURI(), PHP_URL_PATH);
         
         if($path === false) {
-            throw new RuntimeException("Could not parse URI: '{$request->getRequestURI()}'.");
+            throw new \RuntimeException("Could not parse URI: '{$request->getRequestURI()}'.");
         }
 
         return $this->matchPath($path);
@@ -167,7 +167,7 @@ class Router
         $requestMethod = $resource->getRequest()->getMethod();
 
         if(!array_key_exists($requestMethod, $listOfRoutes)) {
-            throw new RuntimeException("Could not match method '{$requestMethod}' on resource '{$className}'.");
+            throw new \RuntimeException("Could not match method '{$requestMethod}' on resource '{$className}'.");
         }
         $contentType = $resource->getRequest()->getContentType();
         if(($pos = strpos($contentType, ";")) > 0) {
@@ -240,7 +240,7 @@ class Router
         }
         
         if(! array_key_exists($resource, $this->routes)) {
-            throw new RuntimeException("Could not find route for resource: '{$resource}'.");
+            throw new \RuntimeException("Could not find route for resource: '{$resource}'.");
         }
         
         $uri = array_slice(explode("/", $this->routes[$resource]['buildPath']), 1);
@@ -251,7 +251,7 @@ class Router
             $segment = trim($segment, " {}");
             
             if(! array_key_exists($segment, $params)) {
-                throw new RuntimeException("Missing parameter '{$segment}' when generating route for resource: '{$resource}'.");
+                throw new \RuntimeException("Missing parameter '{$segment}' when generating route for resource: '{$resource}'.");
             }
             
             $uri[$idx] = urlencode($params[$segment]);
@@ -259,7 +259,7 @@ class Router
         
         $uri = "/" . implode("/", $uri);
         if(preg_match($this->routes[$resource]['matchPath'], $uri) === 0) {
-            throw new RuntimeException("Could not generate valid URI for resource '{$resource}': '{$uri}'.");
+            throw new \RuntimeException("Could not generate valid URI for resource '{$resource}': '{$uri}'.");
         }
         
         return $uri;

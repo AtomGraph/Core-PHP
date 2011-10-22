@@ -1,0 +1,40 @@
+PACKAGE MANAGEMENT PROPOSAL
+
+v.0.1
+
+Authors:
+ - Julius Seporaitis
+
+
+
+Package - a generic term for code and assets doing a specific function (e.g. frontend, administration, statistics)
+Plain package - a package that is not archived and exists as plain directory structure with files.
+Archived package - a PHAR file containing the directory structure with files and assets of a plain package.
+
+Application - a container for all packages, application can be accessed using entry point.
+Application entry point - typically an index.php file.
+Assets - all static content required by a package (CSS, JavaScript, Images, etc.).
+Assets entry point - an asset.php file.
+
+
+TODO: finish this....
+
+e.g. assets in XSLT file:
+
+    <img src={asset://img/logo.jpg}
+
+transforms to:
+
+    <img src="asset.php/<md5-hash-of-deployment>/<package-name>/img/logo.jpg"/>
+
+asset.php pseudo code:
+
+    1. strip deployment hash from path.
+    2. find <package-name>.phar
+    3. check if "/img/logo.jpg" exists inside <package-name>.phar
+    4. if exists
+    4.a. return headers specified for that file, default to like many years in TEH future
+    4.b. return image content
+    5. if does not exist
+    5.a. return 404
+

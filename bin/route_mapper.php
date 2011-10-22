@@ -1,15 +1,33 @@
-#!/usr/bin/php
 <?php
 
-define('ROOTDIR', dirname(dirname(__FILE__)));
-define('DS', DIRECTORY_SEPARATOR);
-define('PS', PATH_SEPARATOR);
+if(!defined('ROOTDIR')) {
+    define('ROOTDIR', dirname(dirname(__FILE__)));
+}
+if(!defined('GRAPHITYDIR')) {
+    define('GRAPHITYDIR', dirname(dirname(__FILE__)));
+}
+if(!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
+if(!defined('PS')) {
+    define('PS', PATH_SEPARATOR);
+}
 define('TAB', "    ");
 
-require_once ROOTDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Loader.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Loader.php";
+require_once GRAPHITYDIR . DS . "lib" . DS . "addendum" . DS . "lib" . DS . "annotations.php";
 
-$loader = new \Graphity\Loader('Graphity', ROOTDIR . DS . "src" . DS . "main" . DS . "php");
+$loader = new \Graphity\Loader('Graphity', GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php");
 $loader->register();
+
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "Path.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "Singleton.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "GET.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "POST.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "DELETE.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "PUT.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "Produces.php";
+require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "Consumes.php";
 
 if(count($argv) < 3) {
     echo "Usage: " . basename($argv[0]) . " <resource-directory> <output-file-path>\n";

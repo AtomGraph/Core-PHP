@@ -20,7 +20,9 @@
  *  @link           http://graphity.org/
  */
 
-namespace Graphity;
+namespace Graphity\Router\Scanner;
+
+use Graphity\Util\Scanning\ScannerListener;
 
 /**
  * Route annotation listener
@@ -58,9 +60,12 @@ class RouteAnnotationListener implements ScannerListener
     public function process($path)
     {
         $className = basename($path, ".php");
-        
-        $reflection = new \ReflectionAnnotatedClass($className);
-        $listOfMethods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+        $namespace = str_ireplace("src/main/php", "", dirname($path));
+
+        $fqName = str_ireplace("/", "\\", ltrim($namespace, "/")) . "\\" . $className;
+
+        $reflection = new \ReflectionAnnotatedClass($fqName);
+        $listOfMethods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         $path = $reflection->getAnnotation('Path');
 
@@ -70,27 +75,25 @@ class RouteAnnotationListener implements ScannerListener
 
             $listOfAnnotations = $method->getAllAnnotations();
             foreach($listOfAnnotations as $annotation) {
-                if($annotation instanceof GET) {
-                    $item['requestMethod'] = "GET";
-                } else if($annotation instanceof POST) {
-                    $item['requestMethod'] = "POST";
-                } else if($annotation instanceof DELETE) {
-                    $item['requestMethod'] = "DELETE";
-                } else if($annotation instanceof PUT) {
-                    $item['requestMethod'] = "PUT";
-                } else if($annotation instanceof Consumes) {
+                if(in_array(strtoupper(get_class($annotation)), array(
+                    "GET",
+                    "POST",
+                    "DELETE",
+                    "PUT"))) {
+                    $item['requestMethod'] = get_class($annotation);
+                } else if(get_class($annotation) === "Consumes") {
                     if(empty($item['consumes'])) {
                         $item['consumes'] = array();
                     }
                     $item['consumes'][] = $annotation->value;
-                } else if($annotation instanceof Produces) {
+                } else if(get_class($annotation) === "Produces") {
                     if(empty($item['produces'])) {
                         $item['produces'] = array();
                     }
                     $item['produces'][] = $annotation->value;
                 }
             }
-            
+
             if(!array_key_exists('requestMethod', $item)) {
                 continue;
             }
@@ -101,7 +104,7 @@ class RouteAnnotationListener implements ScannerListener
         }
 
         $this->listOfAnnotations[] = array(
-            'className' => $className,
+            'className' => str_ireplace("\\", "\\\\", $fqName),
             'path' => $path,
             'items'=> $result
         );

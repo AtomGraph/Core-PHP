@@ -74,7 +74,7 @@ class FilesScanner implements Scanner
      */
     protected function scanDirectory($path)
     {
-        $iterator = new DirectoryIterator($path);
+        $iterator = new \DirectoryIterator($path);
         foreach($iterator as $item) {
             if($item->isDot() || ! $item->isReadable()) {
                 continue;

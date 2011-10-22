@@ -24,6 +24,7 @@ namespace Graphity\View;
 
 use Graphity\ResourceInterface;
 use Graphity\Util\URIResolver;
+use Graphity\View;
 
 /**
  * Specialized view subclass that handles XSLT processor initialization and executes general view procedures, such as passing parameters/arguments to the XSLT stylesheet.
