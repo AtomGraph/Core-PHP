@@ -43,8 +43,9 @@ class Response implements ResponseInterface
     private $encoding = null;
 
     /**
-     * Adds the specified cookie to the response.
-     * @param Cookie $cookie Cookie to return to the client
+     *  Adds the specified cookie to the response.
+     *
+     *  @param Cookie $cookie Cookie to return to the client
      */
     public function addCookie(Cookie $cookie)
     {
@@ -57,19 +58,30 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Sets a HTTP response header.
-     * @param string $name Name of the header
-     * @param string $value Value of the header
+     *  Get list of all cookies
+     *
+     *  @return array
      */
-    
+    public function getCookies()
+    {
+        return $this->cookies;
+    }
+
+    /**
+     *  Sets a HTTP response header.
+     *
+     *  @param string $name Name of the header
+     *  @param string $value Value of the header
+     */
     public function setHeader($name, $value)
     {
         $this->headers[$name] = $value;
     }
     
     /**
-     * Return a list of HTTP headers.
-     * @return array
+     *  Return a list of HTTP headers.
+     *
+     *  @return array
      */
     public function getHeaders()
     {
@@ -77,72 +89,70 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Returns response status.
-     * @return int Status code
+     *  Returns response status.
+     *
+     *  @return int Status code
      */
-    
     public function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * Sets response status.
-     * @param int $status Status code
+     *  Sets response status.
+     *
+     *  @param int $status Status code
      */
-    
     public function setStatus($status)
     {
         $this->status = $status;
     }
 
     /**
-     * Returns content type.
-     * @return string Content type
+     *  Returns content type.
+     *  
+     *  @return string Content type
      */
-    
     public function getContentType()
     {
         return $this->contentType;
     }
 
     /**
-     * Sets content type (e.g. "text/html").
-     * @param string $contentType Content type
+     *  Sets content type (e.g. "text/html").
+     *
+     *  @param string $contentType Content type
      */
-    
     public function setContentType($contentType)
     {
         $this->contentType = $contentType;
-    
-     //$this->setHeader("Content-type", $outputType);
     }
 
     /**
-     * Returns character encoding.
-     * @return string Character encoding
+     *  Returns character encoding.
+     *
+     *  @return string Character encoding
      */
-    
     public function getCharacterEncoding()
     {
         return $this->encoding;
     }
 
     /**
-     * Sets character encoding (e.g. "UTF-8").
-     * @param string $encoding Character encoding
+     *  Sets character encoding (e.g. "UTF-8").
+     *
+     *  @param string $encoding Character encoding
      */
-    
     public function setCharacterEncoding($encoding)
     {
         $this->encoding = $encoding;
     }
 
     /**
-     * Sends a temporary redirect response to the client using the specified redirect location URL.
-     * @param string $url Redirect location URL
+     *  Sends a temporary redirect response to the client using the specified redirect location URL.
+     *
+     *  @param string $url Redirect location URL
      */
-    
     public function sendRedirect($uri)
     {
         header("Cache-Control: no-cache, max-age=0", true);
@@ -151,20 +161,20 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Writes a string into the response output buffer.
-     * @param string $string String
+     *  Writes a string into the response output buffer.
+     *
+     *  @param string $string String
      */
-    
     public function write($string)
     {
         $this->buffer .= $string;
     }
 
     /**
-     * Returns the whole response output buffer.
-     * @return string Buffer string
+     *  Returns the whole response output buffer.
+     *
+     *  @return string Buffer string
      */
-    
     public function getBuffer()
     {
         return $this->buffer;
