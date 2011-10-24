@@ -18,16 +18,25 @@
  * @author Matthew Weier O'Phinney <matthew@zend.com>
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  * @author Fabien Potencier <fabien.potencier@symfony-project.org>
+ *
+ * Original code was cleaned up of _fileExtension and _namespaceSeparator,
+ * because:
+ *   1. these are static values throughout the project. If you use different php extension
+ *      feel free to extend/update this class. If you use two different php extensions
+ *      in your project, well... we don't support that.
+ *   2. _namespaceSeparator is ALWAYS '\' in PHP 5.3. Backward compatibility for '_'
+ *      is already coded on line 106. Whats the point?
+ *   3. 'require' changed to 'require_once'.
+ *
+ * @author Julius Šėporaitis <julius@seporaitis.net>
  */
 
 namespace Graphity;
 
 class Loader
 {
-    private $_fileExtension = '.php';
     private $_namespace;
     private $_includePath;
-    private $_namespaceSeparator = '\\';
 
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the
@@ -39,26 +48,6 @@ class Loader
     {
         $this->_namespace = $ns;
         $this->_includePath = $includePath;
-    }
-
-    /**
-     * Sets the namespace separator used by classes in the namespace of this class loader.
-     * 
-     * @param string $sep The separator to use.
-     */
-    public function setNamespaceSeparator($sep)
-    {
-        $this->_namespaceSeparator = $sep;
-    }
-
-    /**
-     * Gets the namespace seperator used by classes in the namespace of this class loader.
-     *
-     * @return void
-     */
-    public function getNamespaceSeparator()
-    {
-        return $this->_namespaceSeparator;
     }
 
     /**
@@ -79,26 +68,6 @@ class Loader
     public function getIncludePath()
     {
         return $this->_includePath;
-    }
-
-    /**
-     * Sets the file extension of class files in the namespace of this class loader.
-     * 
-     * @param string $fileExtension
-     */
-    public function setFileExtension($fileExtension)
-    {
-        $this->_fileExtension = $fileExtension;
-    }
-
-    /**
-     * Gets the file extension of class files in the namespace of this class loader.
-     *
-     * @return string $fileExtension
-     */
-    public function getFileExtension()
-    {
-        return $this->_fileExtension;
     }
 
     /**
@@ -125,21 +94,22 @@ class Loader
      */
     public function loadClass($className)
     {
-        if (null === $this->_namespace || $this->_namespace.$this->_namespaceSeparator === substr($className, 0, strlen($this->_namespace.$this->_namespaceSeparator))) {
+        if (null === $this->_namespace || ($this->_namespace.'\\') === substr($className, 0, strlen($this->_namespace.'\\'))) {
+            //error_log($className);
             $fileName = '';
             $namespace = '';
-            if (false !== ($lastNsPos = strripos($className, $this->_namespaceSeparator))) {
+            if (false !== ($lastNsPos = strripos($className, '\\'))) {
                 $namespace = substr($className, 0, $lastNsPos);
                 $className = substr($className, $lastNsPos + 1);
-                $fileName = str_replace($this->_namespaceSeparator, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+                $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
             }
-            $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . $this->_fileExtension;
+            $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . ".php";
 
             //if(file_exists(($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName) === false) {
             //    throw new \RuntimeException("Could not load: '{$className}'.");
             //}
 
-            require ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
+            require_once ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
         }
     }
 }
