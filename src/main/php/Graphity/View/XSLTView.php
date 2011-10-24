@@ -40,7 +40,9 @@ abstract class XSLTView extends View
 
     private $resolver = null;
 
-    private $useXSLTCache = false;
+    private $useXSLTCache = true;
+
+    private $profileXSLT = false;
 
     /**
      * Constructs View from Resource, initializes XSLT processor and creates URI resolver.
@@ -65,6 +67,8 @@ abstract class XSLTView extends View
             $this->transformer->importStyleSheet($this->getStyleSheetPath());
         else
             $this->transformer->importStyleSheet($this->getStyleSheet());
+        if($this->profileXSLT === true && $this->useXSLTCache === false)
+            $this->transformer->setProfiling("/tmp/xslt-profiler.txt");
     }
 
     protected function getStyleSheetPath()

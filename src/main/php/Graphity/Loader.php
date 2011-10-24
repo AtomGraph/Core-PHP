@@ -26,7 +26,7 @@
  *      in your project, well... we don't support that.
  *   2. _namespaceSeparator is ALWAYS '\' in PHP 5.3. Backward compatibility for '_'
  *      is already coded on line 106. Whats the point?
- *   3. 'require' changed to 'require_once'.
+ *   3. 'require' changed to 'include_once' for better performance. (http://arin.me/blog/php-require-vs-include-vs-require_once-vs-include_once-performance-test)
  *
  * @author Julius Šėporaitis <julius@seporaitis.net>
  */
@@ -109,7 +109,7 @@ class Loader
             //    throw new \RuntimeException("Could not load: '{$className}'.");
             //}
 
-            require_once ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
+            include_once ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
         }
     }
 }
