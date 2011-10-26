@@ -40,9 +40,9 @@ abstract class XSLTView extends View
 
     private $resolver = null;
 
-    private $useXSLTCache = true;
+    private $useXSLTCache = false;
 
-    private $profileXSLT = false;
+    private $profileXSLT = true;
 
     /**
      * Constructs View from Resource, initializes XSLT processor and creates URI resolver.

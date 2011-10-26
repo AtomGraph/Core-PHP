@@ -20,7 +20,7 @@
  *  @link           http://graphity.org/
  */
 
-namespace HeltNormalt\View;
+namespace Graphity\View;
 
 /**
  * Serializes objects into XML strings.
