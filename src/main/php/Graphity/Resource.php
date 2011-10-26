@@ -249,4 +249,6 @@ abstract class Resource implements ResourceInterface
         return true;
     }
 
+    protected abstract function describe(); // move to ResourceInterface if this works OK
+
 }
