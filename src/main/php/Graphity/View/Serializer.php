@@ -20,7 +20,7 @@
  *  @link           http://graphity.org/
  */
 
-namespace HeltNormalt\View;
+namespace Graphity\View;
 
 /**
  * Serializes objects into XML strings.
@@ -28,7 +28,7 @@ namespace HeltNormalt\View;
  */
 abstract class Serializer
 {
-	protected static function createDOMModel(Model $model, \DOMNode $parent)
+	public static function createDOMModel(Model $model, \DOMNode $parent)
 	{
         if ($parent instanceof \DOMDocument) $doc = $parent;
         else $doc = $parent->ownerDocument;
