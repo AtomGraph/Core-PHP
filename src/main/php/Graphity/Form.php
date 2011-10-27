@@ -25,23 +25,38 @@ namespace Graphity;
 /**
  *  Abstract class for sub-classing. Used to represent data submitted from a HTML form and access the Request parameters in a convenient way.
  */
-abstract class Form
+abstract class Form extends Request
 {
-
-    //protected $request = null;
+    private $request = null;
     
 
     /**
      * Constructs Form from Request.
      */
     
-    public abstract function __construct(Request $request);
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
 
     /**
      * Validates this form and returns array of errors.
      * @return array An array of Errors
      */
-    
+
     public abstract function validate();
 
     /**

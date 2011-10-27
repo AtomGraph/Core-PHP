@@ -45,15 +45,16 @@ class RDFForm extends Graphity\Form
 
     public function __construct(Graphity\Request $request)
     {
+        parent::__construct($request);
         $this->setModel(new Model());
-        $this->initParamMap($request);
+        $this->initParamMap();
         $this->initModel();
     }
 
-    private function initParamMap(Graphity\Request $request)
+    private function initParamMap()
     {
-        $postBody = stream_get_contents($request->getInputStream());
-        fclose($request->getInputStream());
+        $postBody = stream_get_contents($this->getRequest()->getInputStream());
+        fclose($this-getRequest()->getInputStream());
         
         $params = explode("&", $postBody);
         
