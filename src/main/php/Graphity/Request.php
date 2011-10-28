@@ -32,28 +32,7 @@ class Request implements RequestInterface
 
     private $attributes = array();
 
-    private $cookies = array();
-
-    private $parameters = array();
-
-    private $headers = array();
-
     private $session = null;
-
-    public function __construct() {
-        foreach($_GET as $name => $value) {
-          $this->setParameter($name, $value);
-        }
-        foreach($_POST as $name => $value) {
-          $this->setParameter($name, $value);
-        }
-        foreach($_SERVER as $name => $value) {
-          $this->setHeader($name, $value);
-        }
-        foreach($_COOKIE as $name => $value) {
-          $this->addCookie(new Cookie($name, $value));
-        }
-    }
        
     /**
      * Returns a request attribute, or null if it does not exist. They are used to save and share data between components in a context of a single request.
@@ -97,8 +76,13 @@ class Request implements RequestInterface
 
     public function getCookies()
     {
-        if(count($this->cookies) > 0)
-            return $this->cookies;
+        $cookies = array();
+
+        foreach($_COOKIE as $name => $value)
+          $cookies[] = new Cookie($name, $value);
+
+        if (count($cookies) > 0)
+            return $cookies;
         else
             return null;
     }
@@ -111,21 +95,13 @@ class Request implements RequestInterface
     
     public function getParameter($name)
     {
-        if(isset($this->parameters[$name]))
-            return $this->parameters[$name];
-        else
-            return null;
-    }
+        if (isset($_GET[$name]))
+            return $_GET[$name];
 
-    /**
-     * Sets a request parameter, as if it was set by the client.
-     * @param string $name Name of the parameter
-     * @param string $value Value of the parameter
-     */
-    
-    public function setParameter($name, $value)
-    {
-        $this->parameters[$name] = $value; // QUIRK???
+        if (isset($_POST[$name]))
+            return $_POST[$name];
+
+        return null;
     }
 
     /**
@@ -150,11 +126,6 @@ class Request implements RequestInterface
         return $this->getHeader("REQUEST_METHOD");
     }
 
-    public function setMethod($method)
-    {
-        $this->setHeader("REQUEST_METHOD", $method);
-    }
-
     /**
      * Returns a HTTP request header, or null if it does not exist.
      * Header names are the same as in PHP's $_SERVER[].
@@ -164,21 +135,10 @@ class Request implements RequestInterface
     
     public function getHeader($name)
     {
-        if(isset($this->headers[$name]))
-            return $this->headers[$name];
+        if(isset($_SERVER[$name]))
+            return $_SERVER[$name];
         else
             return null;
-    }
-
-    /**
-     * Sets a header parameter, as if it was set by the client.
-     * @param string $name Name of the header
-     * @param string $value Value of the header
-     */
-    
-    public function setHeader($name, $value)
-    {
-        $this->headers[$name] = $value;
     }
 
     /**
@@ -200,7 +160,7 @@ class Request implements RequestInterface
     
     public function getParameterMap()
     {
-        return $this->parameters;
+        return array_merge($_GET, $_POST);
     }
 
     /**
@@ -212,11 +172,6 @@ class Request implements RequestInterface
     public function getPathInfo()
     {
         return $this->getHeader("PATH_INFO");
-    }
-
-    public function setPathInfo($path)
-    {
-        $this->setHeader("PATH_INFO", $path);
     }
 
     /**
@@ -242,11 +197,6 @@ class Request implements RequestInterface
     {
         $port = ($this->getServerPort() == 80 || $this->getServerPort() == null) ? "" : (":" . $this->getServerPort());
         return $this->getHeader("SERVER_NAME") . $port;
-    }
-
-    public function setServerName($name)
-    {
-        $this->setHeader("SERVER_NAME", $name);
     }
 
     /**

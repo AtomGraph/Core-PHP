@@ -31,21 +31,13 @@ interface RequestInterface
 
     function getContentType();
 
-    function addCookie(Cookie $cookie); // not in Java Servlet API
-
     function getCookies();
 
     function getParameter($name);
 
-    function setParameter($name, $value); // not in Java Servlet API
-
     function getMethod();
 
-    function setMethod($method); // not in Java Servlet API
-
     function getHeader($name);
-
-    function setHeader($name, $value); // not in Java Servlet API
 
     function getSession();
 
@@ -53,13 +45,9 @@ interface RequestInterface
 
     function getPathInfo();
 
-    function setPathInfo($path);
-
     function getRequestURI();
 
     function getServerName();
-
-    function setServerName($name); // not in Java Servlet API
 
     function getServerPort();
 

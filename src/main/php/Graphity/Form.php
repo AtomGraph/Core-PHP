@@ -27,30 +27,6 @@ namespace Graphity;
  */
 abstract class Form extends Request
 {
-    private $request = null;
-    
-
-    /**
-     * Constructs Form from Request.
-     */
-    
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @return Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-    }
 
     /**
      * Validates this form and returns array of errors.
