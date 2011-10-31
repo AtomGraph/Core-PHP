@@ -22,6 +22,8 @@
 
 namespace Graphity;
 
+use Graphity\Util\UriBuilder;
+
 /**
  * An abstract HTTP Resource for subclassing. It should be specified as a base class in Propel schema.
  * If used without Propel, it should not extend BaseObject.
@@ -55,8 +57,11 @@ abstract class Resource implements ResourceInterface
     {
         $this->request = $request;
         $this->router = $router;
-        $this->baseUri = $request->getScheme() . "://" . $request->getServerName() . "/"; // request host becomes mapping host
-        $this->path = $this->extractPath();
+        $this->baseUri = UriBuilder::newInstance()->
+            scheme($request->getScheme())->
+            host($request->getServerName())->
+            build();
+
         $this->response = new Response();
         $this->response->setStatus(Response::SC_OK);
         $this->response->setCharacterEncoding("UTF-8");
@@ -83,24 +88,6 @@ abstract class Resource implements ResourceInterface
     }
 
     /**
-     * Extracts and returns the full URI (including both host and resource URIs) of the current Request, by striping the query string.
-     *
-     * @param Request $request Request to extract the URI from
-     *
-     * @return string URI
-     */
-    private function extractPath()
-    {
-        $path = $this->getRequest()->getRequestURI();
-        
-        if(($pos = strpos($path, "?")) !== false) {
-            $path = substr($path, 0, $pos); // strip the query string
-        }
-
-        return trim($path, "/");
-    }
-
-    /**
      * Extracts and returns the absolute path of the current Request, by striping the query string.
      *
      * @param Request $request Request to extract the path from
@@ -109,7 +96,11 @@ abstract class Resource implements ResourceInterface
      */
     public function getPath()
     {
-        return $this->path;
+        $absolutePath = UriBuilder::fromUri($this->getBaseURI())->
+            replacePath($this->getRequest()->getPathInfo())->
+            build();
+        $path = substr($absolutePath, strlen($this->getBaseURI()));
+        return trim($path, "/");
     }
 
     /**

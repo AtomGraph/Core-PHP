@@ -199,7 +199,20 @@ class UriBuilder {
         
         return $this;
     }
-    
+
+    /**
+     * @param string $value
+     * 
+     * @return UriBuilder
+     */
+    public function replacePath($value) {
+        $this->listOfSegments = array();
+
+        $this->path($value);
+
+        return $this;
+    }
+
     /**
      * Append a single path segment
      * 

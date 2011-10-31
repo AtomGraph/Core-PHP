@@ -185,7 +185,7 @@ class Request implements RequestInterface
         if($this->getHeader("REQUEST_URI") != null)
             return $this->getHeader("REQUEST_URI");
         else
-            return "http://" . $this->getServerName() . $this->getPathInfo();
+            return $this->getScheme() . "://" . $this->getServerName() . $this->getPathInfo();
     }
 
     /**
