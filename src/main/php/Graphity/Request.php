@@ -135,7 +135,7 @@ class Request implements RequestInterface
     
     public function getHeader($name)
     {
-        if(isset($_SERVER[$name]))
+        if (isset($_SERVER[$name]))
             return $_SERVER[$name];
         else
             return null;
@@ -207,6 +207,14 @@ class Request implements RequestInterface
     public function getServerPort()
     {
         return $this->getHeader("SERVER_PORT");
+    }
+
+    public function getScheme()
+    {
+        if ($this->getHeader('HTTPS') !== null && $this->getHeader('HTTPS') !== "off")
+            return "https";
+
+        return "http";
     }
 
     public function getQueryString()

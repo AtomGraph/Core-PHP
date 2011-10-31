@@ -31,22 +31,7 @@ abstract class Resource implements ResourceInterface
     /**
      * @var string
      */
-    private $scheme = "http";
-
-    /**
-     * @var string
-     */
     private $baseUri = null;
-
-    /**
-     * @var string
-     */
-    private $uri = null;
-
-    /**
-     * @var Resource
-     */
-    private $resource = null;
 
     /**
      * @var Response
@@ -68,18 +53,10 @@ abstract class Resource implements ResourceInterface
      */
     public function __construct(Request $request, Router $router)
     {
-        if(!empty($_SERVER['HTTPS'])) {
-            // make sure it's not IIS.
-            if($_SERVER['HTTPS'] !== "off") {
-                $this->scheme = "https";
-            }
-        }
         $this->request = $request;
         $this->router = $router;
-        $this->baseUri = $this->scheme . "://" . $request->getServerName() . "/"; // request host becomes mapping host
+        $this->baseUri = $request->getScheme() . "://" . $request->getServerName() . "/"; // request host becomes mapping host
         $this->path = $this->extractPath();
-        //$host = rtrim($request->getHeader("HTTP_HOST"), "/");
-        $this->uri = $this->baseUri . rtrim($this->getPath(), "/");
         $this->response = new Response();
         $this->response->setStatus(Response::SC_OK);
         $this->response->setCharacterEncoding("UTF-8");
@@ -92,12 +69,7 @@ abstract class Resource implements ResourceInterface
      */
     public function getURI()
     {
-        return $this->uri;
-    }
-
-    public function setURI($uri)
-    {
-        $this->uri = $uri;
+        return $this->baseUri . rtrim($this->getPath(), "/");
     }
 
     /**
@@ -163,6 +135,11 @@ abstract class Resource implements ResourceInterface
     public function getBaseURI()
     {
         return $this->baseUri;
+    }
+
+    protected function setBaseURI($baseUri)
+    {
+        $this->baseUri = $baseUri;
     }
 
     public function getRouter()

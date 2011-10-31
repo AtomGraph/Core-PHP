@@ -121,8 +121,5 @@ abstract class XSLTView extends View
         return $this->getResource()->getRequest();
     }
 
-    protected function applyParameters()
-    {
-    }
 }
 

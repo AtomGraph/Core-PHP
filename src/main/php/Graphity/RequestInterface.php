@@ -47,6 +47,8 @@ interface RequestInterface
 
     function getRequestURI();
 
+    function getScheme();
+
     function getServerName();
 
     function getServerPort();
