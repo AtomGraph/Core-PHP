@@ -74,7 +74,7 @@ abstract class Resource implements ResourceInterface
      */
     public function getURI()
     {
-        return $this->baseUri . rtrim($this->getPath(), "/");
+        return rtrim($this->baseUri, "/") . "/" . rtrim($this->getPath(), "/");
     }
 
     /**
