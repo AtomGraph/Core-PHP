@@ -10,6 +10,11 @@ class ResourceExposed extends Graphity\Resource
     {
         return true;
     }
+
+    public function describe()
+    {
+        return "";
+    }
 }
 
 class ResourceTest extends \PHPUnit_Framework_TestCase
@@ -29,9 +34,12 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     {
         $router = new Graphity\Router(include(dirname(__FILE__) . "/routes.php"));
 
-        $request = $this->getMock('Graphity\\Request', array('getRequestURI', 'getServerName'));
+        $request = $this->getMock('Graphity\\Request', array('getScheme', 'getServerName', 'getPathInfo'));
         $request->expects($this->any())
-                ->method('getRequestURI')
+                ->method('getScheme')
+                ->will($this->returnValue("http"));
+        $request->expects($this->any())
+                ->method('getPathInfo')
                 ->will($this->returnValue($realPath));
         $request->expects($this->any())
                 ->method('getServerName')
@@ -41,35 +49,31 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(static::HTTP_HOST . $expectedPath, $resource->getURI());
     }
 
-    public function settersProvider()
+    public function getPathProvider()
     {
         return array(
-            array("URI", "http://localhost/")
+            /* pathInfo, expectedPath */
+            array("/", ""),
+            array("/path/", "/path"),
+            array("/path", "/path"),
+            array("/sub/path/", "/sub/path"),
+            array("/sub/path", "/sub/path"),
         );
     }
 
     /**
-     * @dataProvider settersProvider
+     * @dataProvider getPathProvider
      */
-    public function test_setters($property, $value)
-    {
+    public function test_getPath($pathInfo, $expected) {
         $router = new Graphity\Router(include(dirname(__FILE__) . "/routes.php"));
 
-        $request = $this->getMock('Graphity\Request', array('getRequestURI', 'getServerName'));
+        $request = $this->getMock('Graphity\\Request', array('getPathInfo'));
         $request->expects($this->any())
-                ->method('getRequestURI')
-                ->will($this->returnValue("/test"));
-        $request->expects($this->any())
-                ->method('getServerName')
-                ->will($this->returnValue("localhost"));
+                ->method('getPathInfo')
+                ->will($this->returnValue($pathInfo));
 
         $resource = new ResourceExposed($request, $router);
-
-        $setter = "set" . $property;
-        $getter = "get" . $property;
-        
-        $resource->$setter($value);
-        $this->assertEquals($value, $resource->$getter());
+        $this->assertEquals($expected, $resource->getPath());
     }
 }
 

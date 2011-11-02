@@ -41,16 +41,21 @@ class RDFFormTest extends \PHPUnit_Framework_TestCase
     {
         $stream = fopen('data://text/plain,' . self::$POST_BODY, "r");
         
-        $stub = $this->getMock('Graphity\\Request');
-        $stub->expects($this->any())->method('getInputStream')->will($this->returnValue($stream));
-        
-        $form = new Graphity\Form\RDFForm($stub);
+        $form = $this->getMockBuilder('Graphity\\Form\\RDFForm')
+                     ->disableOriginalConstructor()
+                     ->setMethods(array('getInputStream'))
+                     ->getMock();
+        $form->expects($this->any())
+             ->method('getInputStream')
+             ->will($this->returnValue($stream));
+        $form->__construct();
         
         $model = $form->getModel();
+        $this->assertEquals(count(self::$STMTS), count($model->getStatements()));
         foreach($model->getStatements() as $idx => $stmt) {
             $this->assertEquals(self::$STMTS[$idx], (string)$stmt);
         }
-        
+
         $this->assertEquals(implode("", self::$STMTS), (string)$model);
     }
 

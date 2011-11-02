@@ -8,6 +8,10 @@ class TestResource extends Graphity\Resource {
         return true;
     }
 
+    public function describe() {
+        return "";
+    }
+
     /**
      *  @GET
      *  @Produces("text/html")

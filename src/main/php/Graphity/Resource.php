@@ -74,7 +74,7 @@ abstract class Resource implements ResourceInterface
      */
     public function getURI()
     {
-        return rtrim(rtrim($this->baseUri, "/") . "/" . rtrim($this->getPath(), "/"), "/");
+        return rtrim($this->getBaseURI(), "/") . "/" . trim($this->getPath(), "/");
     }
 
     /**
@@ -96,11 +96,10 @@ abstract class Resource implements ResourceInterface
      */
     public function getPath()
     {
-        $absolutePath = UriBuilder::fromUri($this->getBaseURI())->
-            replacePath($this->getRequest()->getPathInfo())->
+        $absolutePath = UriBuilder::fromPath($this->getRequest()->getPathInfo())->
             build();
-        $path = substr($absolutePath, strlen($this->getBaseURI()));
-        return trim($path, "/");
+
+        return rtrim($absolutePath, "/");
     }
 
     /**

@@ -43,7 +43,7 @@ class RDFForm extends Graphity\Form
 
     private $values = array();
 
-    public function __construct(Graphity\Request $request)
+    public function __construct()
     {
         $this->setModel(new Model());
         $this->initParamMap();

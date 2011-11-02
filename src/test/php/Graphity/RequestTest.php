@@ -24,23 +24,42 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function test_getRequestURI($requestUri, $serverName, $serverPort, $pathInfo, $expected)
     {
-        $request = $this->getMock('Graphity\\Request', array('getHeader', 'getServerPort', 'getPathInfo'));
-        if($requestUri !== null) {
-            $request->expects($this->any())
-                    ->method('getHeader')
-                    ->will($this->onConsecutiveCalls($requestUri, $requestUri));
-        } else {
-            $request->expects($this->any())
-                    ->method('getHeader')
-                    ->will($this->onConsecutiveCalls($requestUri, $serverName));
-        }
+        $request = $this->getMock('Graphity\\Request', array('getHeader', 'getServerName', 'getPathInfo'));
         $request->expects($this->any())
-                ->method('getServerPort')
-                ->will($this->returnValue($serverPort));
+                ->method('getHeader')
+                ->will($this->onConsecutiveCalls($requestUri, $requestUri));
+        $request->expects($this->any())
+                ->method('getServerName')
+                ->will($this->returnValue($serverName . (($serverPort == 80 || $serverPort == null) ? "" : (":" . $serverPort))));
         $request->expects($this->any())
                 ->method('getPathInfo')
                 ->will($this->returnValue($pathInfo));
 
         $this->assertEquals($expected, $request->getRequestURI());
+    }
+
+    public function getServerNameProvider()
+    {
+        return array(
+            /** ServerName, ServerPort, Expected */
+            array("localhost", null, "localhost"),
+            array("localhost", 80, "localhost"),
+            array("localhost", 8080, "localhost:8080"),
+        );
+    }
+
+    /**
+     *  @dataProvider getServerNameProvider
+     */
+    public function test_getServerName($serverName, $serverPort, $expected) {
+        $request = $this->getMock('Graphity\\Request', array('getHeader', 'getServerPort'));
+        $request->expects($this->any())
+                ->method('getHeader')
+                ->will($this->returnValue($serverName));
+        $request->expects($this->any())
+                ->method('getServerPort')
+                ->will($this->returnValue($serverPort));
+
+        $this->assertEquals($expected, $request->getServerName());
     }
 }
