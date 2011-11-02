@@ -116,10 +116,5 @@ abstract class XSLTView extends View
         $this->resolver = $resolver;
     }
 
-    public function getRequest()
-    {
-        return $this->getResource()->getRequest();
-    }
-
 }
 

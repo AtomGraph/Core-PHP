@@ -54,5 +54,11 @@ abstract class View extends Response
     {
         $this->resource = $resource;
     }
+
+    public function getRequest()
+    {
+        return $this->getResource()->getRequest();
+    }
+
 }
 
