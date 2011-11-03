@@ -72,6 +72,11 @@ class UriBuilderTest extends \PHPUnit_Framework_TestCase
                 'listOfQueryParams' => array('some' => 'arg'),
                 'fragment' => 'fragment'
             )),
+            array("http://stage.example.org:8080/", array(
+                'scheme' => 'http',
+                'hostname' => 'stage.example.org',
+                'port' => 8080,
+            )),
         );
     }
     
@@ -159,6 +164,15 @@ class UriBuilderTest extends \PHPUnit_Framework_TestCase
                 ),
                 array(),
                 "something/good#%3Ffoo%3Dbar"
+            ),
+            array(
+                array(
+                    'scheme' => 'http',
+                    'host' => 'stage.example.org:8080',
+                    'port' => 8080,
+                ),
+                array(),
+                "http://stage.example.org:8080/",
             ),
         );
     }

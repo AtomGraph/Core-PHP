@@ -163,9 +163,10 @@ class UriBuilder {
      */
     public function host($value) {
         $partMap = parse_url($value);
-        if(array_key_exists('scheme', $partMap)) {
+        if(array_key_exists('host', $partMap)) {
             $this->hostname = $partMap['host'];
-        } elseif(array_key_exists('path', $partMap)) {
+        }
+        if(array_key_exists('path', $partMap)) {
             $host = $partMap['path'];
             if(($slashPos = strpos($host, "/")) !== false) {
                 $host = substr($host, 0, $slashPos);

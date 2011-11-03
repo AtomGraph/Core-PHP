@@ -60,6 +60,7 @@ abstract class Resource implements ResourceInterface
         $this->baseUri = UriBuilder::newInstance()->
             scheme($request->getScheme())->
             host($request->getServerName())->
+            port($request->getServerPort())->
             build();
 
         $this->response = new Response();
