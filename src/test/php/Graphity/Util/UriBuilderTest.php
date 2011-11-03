@@ -174,6 +174,15 @@ class UriBuilderTest extends \PHPUnit_Framework_TestCase
                 array(),
                 "http://stage.example.org:8080/",
             ),
+            array(
+                array(
+                    'scheme' => 'http',
+                    'host' => 'example.org',
+                    'port' => 80,
+                ),
+                array(),
+                'http://example.org/',
+           ),
         );
     }
     
