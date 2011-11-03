@@ -350,7 +350,7 @@ class UriBuilder {
         }
         
         if(!empty($this->port)) {
-            if($this->scheme !== null && (($this->scheme == "http" && $this->port !== 80) || ($this->scheme == "https" && $this->port !== 443))) {
+            if($this->scheme !== null && (($this->scheme == "http" && intval($this->port) !== 80) || ($this->scheme == "https" && intval($this->port) !== 443))) {
                 $uri .= ":" . $this->port;
             }
         }
