@@ -75,7 +75,9 @@ abstract class Resource implements ResourceInterface
      */
     public function getURI()
     {
-        return rtrim($this->getBaseURI(), "/") . "/" . trim($this->getPath(), "/");
+        $uri = rtrim($this->getBaseURI(), "/") . "/" . trim($this->getPath(), "/");
+        if ($uri == $this->getBaseURI()) return $uri;
+        else return rtrim($uri, "/");
     }
 
     /**
@@ -89,7 +91,22 @@ abstract class Resource implements ResourceInterface
     }
 
     /**
-     * Extracts and returns the absolute path of the current Request, by striping the query string.
+     * Extracts and returns the absolute path of the current Request, striping the query string.
+     *
+     * @param Request $request Request to extract the path from
+     *
+     * @return string path
+     */
+    public function getAbsolutePath()
+    {
+        $absolutePath = UriBuilder::fromPath($this->getRequest()->getPathInfo())->
+            build();
+
+        return rtrim($absolutePath, "/");
+    }
+
+    /**
+     * Extracts and returns the path of the current Request relative to the base URI, striping the query string.
      *
      * @param Request $request Request to extract the path from
      *
@@ -97,10 +114,7 @@ abstract class Resource implements ResourceInterface
      */
     public function getPath()
     {
-        $absolutePath = UriBuilder::fromPath($this->getRequest()->getPathInfo())->
-            build();
-
-        return rtrim($absolutePath, "/");
+         return substr($this->getAbsolutePath(), strlen(parse_url($this->getBaseURI(), PHP_URL_PATH)));
     }
 
     /**
@@ -128,7 +142,7 @@ abstract class Resource implements ResourceInterface
         return $this->baseUri;
     }
 
-    protected function setBaseURI($baseUri)
+    protected final function setBaseURI($baseUri)
     {
         $this->baseUri = $baseUri;
     }
