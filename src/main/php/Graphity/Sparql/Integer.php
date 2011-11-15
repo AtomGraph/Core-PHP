@@ -33,7 +33,7 @@ class Integer extends ParameterAbstract
     private $value = null;
 
     public function __construct($value) {
-        if(is_integer($value) === false) {
+        if(is_numeric($value) === false) {
             throw new \RuntimeException("Invalid integer value.");
         }
 
