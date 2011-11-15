@@ -62,4 +62,45 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $request->getServerName());
     }
+
+    public function getMethodProvider() 
+    {
+        return array(
+            /** $_SERVER['REQUEST_METHOD'], $_POST['_method'], expected getMethod() */
+            array("GET", "GET", "GET"),
+            array("GET", "POST", "GET"),
+            array("GET", "PUT", "GET"),
+            array("GET", "DELETE", "GET"),
+
+            array("POST", "GET", "POST"),
+            array("POST", "POST", "POST"),
+            array("POST", "PUT", "PUT"),
+            array("POST", "DELETE", "DELETE"),
+
+            array("PUT", "GET", "PUT"),
+            array("PUT", "POST", "PUT"),
+            array("PUT", "PUT", "PUT"),
+            array("PUT", "DELETE", "PUT"),
+
+            array("DELETE", "GET", "DELETE"),
+            array("DELETE", "POST", "DELETE"),
+            array("DELETE", "PUT", "DELETE"),
+            array("DELETE", "DELETE", "DELETE"),
+        );
+    }
+
+    /**
+     *  @dataProvider getMethodProvider
+     */
+    public function test_getMethod($httpMethod, $postMethod, $expectedMethod) {
+        $request = $this->getMock('Graphity\\Request', array('getHeader', 'getParameter'));
+        $request->expects($this->any())
+                ->method('getHeader')
+                ->will($this->returnValue($httpMethod));
+        $request->expects($this->any())
+                ->method('getParameter')
+                ->will($this->returnValue($postMethod));
+        
+        $this->assertEquals($expectedMethod, $request->getMethod());
+    }
 }

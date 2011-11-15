@@ -119,7 +119,7 @@ class Request implements RequestInterface
          */
         if(strtoupper($this->getHeader('REQUEST_METHOD')) === "POST") {
             if(in_array(strtoupper($this->getParameter('_method')), array("PUT", "DELETE"))) {
-                $this->setMethod(strtoupper($this->getParameter('_method')));
+                return strtoupper($this->getParameter('_method'));
             }
         }
         
