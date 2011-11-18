@@ -22,6 +22,8 @@
 
 namespace Graphity\Rdf;
 
+use Graphity\Vocabulary\Rdf;
+
 /**
  * An RDF Model.
  * 
@@ -38,7 +40,7 @@ class Model implements \Iterator, \ArrayAccess
      * @var integer
      */
     protected $it = 0;
-    
+
     /**
      * Add all the statements in the array to the model
      * 
@@ -238,7 +240,62 @@ class Model implements \Iterator, \ArrayAccess
         
         return $data;
     }
-    
+
+    /**
+     * @return DOMDocument
+     */
+    public final function toDOM()
+    {
+		$doc = new \DOMDocument("1.0", "UTF-8");
+		$rdfElem = $doc->appendChild($doc->createElementNS(Rdf::NS, "rdf:RDF"));
+
+        foreach ($this->getStatements() as $stmt)
+        {
+            $descElem = $doc->createElementNS(Rdf::NS, "rdf:Description");
+
+            // subject
+            if ($stmt->getSubject()->isAnonymous()) $descElem->setAttributeNS(Rdf::NS, "rdf:nodeID", $stmt->getSubject()->getAnonymousId());
+            if ($stmt->getSubject()->isURIResource()) $descElem->setAttributeNS(Rdf::NS, "rdf:about", $stmt->getSubject()->getURI());
+            
+            // property
+            $nsUri = $localName = null;
+            // try predicate local name as substring after #
+            if (strrpos($stmt->getPredicate()->getURI(), "#") !== false)
+            {
+                $nsUri = substr($stmt->getPredicate()->getURI(), 0, strrpos($stmt->getPredicate()->getURI(), "#") + 1);
+                $localName = substr($stmt->getPredicate()->getURI(), strrpos($stmt->getPredicate()->getURI(), "#") + 1);
+            }
+            // as a 2nd option try predicate local name as substring after /
+            if ($nsUri === null && $localName === null && strrpos($stmt->getPredicate()->getURI(), "/") !== false)
+            {
+                $nsUri = substr($stmt->getPredicate()->getURI(), 0, strrpos($stmt->getPredicate()->getURI(), "/") + 1);
+                $localName = substr($stmt->getPredicate()->getURI(), strrpos($stmt->getPredicate()->getURI(), "/") + 1);
+            }
+            $propElem = $descElem->appendChild($doc->createElementNS($nsUri, "tmp" . ":" . $localName)); // uniqid() didn't work
+
+            // object
+            if ($stmt->getObject()->isAnonymous()) $propElem->setAttributeNS(Rdf::NS, "rdf:nodeID", $stmt->getObject()->getAnonymousId());
+            if ($stmt->getObject()->isURIResource()) $propElem->setAttributeNS(Rdf::NS, "rdf:resource", $stmt->getObject()->getURI());
+            if ($stmt->getObject()->isLiteral())
+            {
+                if ($stmt->getObject()->hasDatatype()) $propElem->setAttributeNS(Rdf::NS, "rdf:datatype", $stmt->getObject()->getDatatype());
+                if ($stmt->getObject()->hasLanguage()) $propElem->setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:lang", $stmt->getObject()->getLanguage());
+                $propElem->appendChild($doc->createTextNode($stmt->getObject()->getValue()));
+            }
+
+            $rdfElem->appendChild($descElem);
+        }
+
+        // group triples by subject (eases XSLT processing. Jena RDF/XML writer does the same)
+        $xsl = new \DOMDocument();
+        $xsl->load("C:\Users\Pumba\WebRoot\heltnormalt\lib\graphity\src\main\webapp\WEB-INF\xsl\group-triples.xsl"); // TO-DO: make generic!!!
+        $transformer = new \XSLTProcessor();
+        $transformer->importStyleSheet($xsl);
+        $doc = $transformer->transformToDoc($doc);
+
+        return $doc;
+    }
+
 	/* (non-PHPdoc)
      * @see Iterator::current()
      */
