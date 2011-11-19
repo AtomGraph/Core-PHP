@@ -23,6 +23,7 @@
 namespace Graphity;
 
 use Graphity\Util\UriBuilder;
+use Graphity\Exception;
 
 /**
  * An abstract HTTP Resource for subclassing. It should be specified as a base class in Propel schema.
@@ -201,7 +202,7 @@ abstract class Resource implements ResourceInterface
      */
     public final function process()
     {
-        try {
+        //try {
             $ref = new \ReflectionAnnotatedClass($this);
             if($ref->hasAnnotation('Singleton') === false && $this->exists() === false) {
                 throw new WebApplicationException(Response::SC_NOT_FOUND, "Resource not found");
@@ -218,12 +219,15 @@ abstract class Resource implements ResourceInterface
                 if($this->getResponse() instanceof View)
                     $this->getResponse()->display();
             }
-        }
+        //}
+        // looks like we shouldn't catch Exceptions here in the parent class?
+        /*
         catch(Exception $e) {
             $this->log($e);
-            $this->setResponse(new ExceptionView($e, $this->getRequest()));
+            $this->setResponse(new ExceptionView($e, $this->getRequest())); // ExceptionView not known at this point!
             $this->getResponse()->display();
         }
+        */
         $this->output();  
     }
 

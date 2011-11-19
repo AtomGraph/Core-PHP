@@ -271,6 +271,7 @@ class Model implements \Iterator, \ArrayAccess
                 $nsUri = substr($stmt->getPredicate()->getURI(), 0, strrpos($stmt->getPredicate()->getURI(), "/") + 1);
                 $localName = substr($stmt->getPredicate()->getURI(), strrpos($stmt->getPredicate()->getURI(), "/") + 1);
             }
+            if ($nsUri === null && $localName === null) throw new Graphity\Exception("Cannot serialize predicate URI '{$stmt->getPredicate()->getURI()}' in RDF/XML");
             $propElem = $descElem->appendChild($doc->createElementNS($nsUri, "tmp" . ":" . $localName)); // uniqid() didn't work
 
             // object

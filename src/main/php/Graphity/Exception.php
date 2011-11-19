@@ -26,22 +26,20 @@ use Graphity\Rdf;
 use Graphity\Vocabulary as Vocabulary;
 
 /**
- *  More information:
- *      - http://jsr311.java.net/nonav/javadoc/javax/ws/rs/WebApplicationException.html
- *      - http://php.net/manual/en/language.exceptions.extending.php
+ * This should be the root of all Graphity Exceptions
  */
-class WebApplicationException extends Exception
+class Exception extends \ErrorException
 {
-    public function __construct($code, $message = "Web application exception")
-    {
-        parent::__construct($message, $code);
-    }
-
     public function toModel()
     {
         $model = new Rdf\Model();
 
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::NS)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::Exception)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Http::statusCodeNumber), new Rdf\Literal($this->getCode(), Vocabulary\XSD::int)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\DC::description), new Rdf\Literal($this->getMessage())));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Graphity::trace), new Rdf\Literal($this->getTraceAsString())));
+
+        return $model;
     }
 
 }
