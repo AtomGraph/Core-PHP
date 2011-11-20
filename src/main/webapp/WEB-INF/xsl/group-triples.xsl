@@ -20,6 +20,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 exclude-result-prefixes="xsl rdf">
 
+    <!-- groups triples in RDF/XML by subject to ease further XSLT processing -->
+
     <xsl:key name="resources" match="*[@rdf:about] | *[@rdf:nodeID]" use="@rdf:about | @rdf:nodeID"/>
 
     <xsl:template match="rdf:RDF">
