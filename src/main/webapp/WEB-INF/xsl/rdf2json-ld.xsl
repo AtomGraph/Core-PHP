@@ -67,14 +67,14 @@ exclude-result-prefixes="xsl rdf">
     </xsl:template>
 
     <!-- object resource -->
-    <xsl:template match="*/*/@rdf:resource">
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/*/@rdf:resource">
         <xsl:text>"@iri": "</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>"</xsl:text>
     </xsl:template>
 
     <!-- object literal datatype -->
-    <xsl:template match="*/*/@rdf:datatype">
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/*/@rdf:datatype">
         <xsl:text>"@datatype": "</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>"</xsl:text>
@@ -82,7 +82,7 @@ exclude-result-prefixes="xsl rdf">
     </xsl:template>
 
     <!-- object literal language -->
-    <xsl:template match="*/*/@xml:lang">
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/*/@xml:lang">
         <xsl:text>"@language": "</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>"</xsl:text>
@@ -90,17 +90,19 @@ exclude-result-prefixes="xsl rdf">
     </xsl:template>
 
     <!-- object literal (plain) -->
-    <xsl:template match="*/*/text()">
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/*/text()">
         <xsl:text>"</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>"</xsl:text>
     </xsl:template>
 
     <!-- object literal (w/ datatype or language) -->
-    <xsl:template match="*/*[@rdf:datatype or @xml:lang]/text()">
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/*[@rdf:datatype or @xml:lang]/text()">
         <xsl:text>"@literal": "</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>"</xsl:text>
     </xsl:template>
+
+    <xsl:template match="node()"/>
 
 </xsl:stylesheet>
