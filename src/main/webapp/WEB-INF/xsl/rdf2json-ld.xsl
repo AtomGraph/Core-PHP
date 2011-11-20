@@ -103,4 +103,6 @@ exclude-result-prefixes="xsl rdf">
         <xsl:text>"</xsl:text>
     </xsl:template>
 
+    <xsl:template match="node()"/>
+
 </xsl:stylesheet>
