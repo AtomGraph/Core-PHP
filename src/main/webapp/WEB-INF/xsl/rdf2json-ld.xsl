@@ -66,6 +66,14 @@ exclude-result-prefixes="xsl rdf">
         <xsl:if test="position() != last()">, </xsl:if>
     </xsl:template>
 
+    <!-- property rdf:type -->
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/rdf:type">
+        <xsl:text>"@type": "</xsl:text>
+        <xsl:value-of select="@rdf:resource"/>
+        <xsl:text>"</xsl:text>
+        <xsl:if test="position() != last()">, </xsl:if>
+    </xsl:template>
+
     <!-- object resource -->
     <xsl:template match="*[@rdf:about or @rdf:nodeID]/*/@rdf:resource">
         <xsl:text>"@iri": "</xsl:text>
