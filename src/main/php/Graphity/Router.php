@@ -61,7 +61,7 @@ class Router
 
     public function importRouteArray(array $routes)
     {
-        throw new WebApplicationException("Could not import route array.");
+        throw new \Graphity\WebApplicationException("Could not import route array.");
         //$this->routes = array_merge($this->routes, $routes);
     }
 
@@ -79,7 +79,7 @@ class Router
         $path = parse_url($uri, PHP_URL_PATH);
         
         if($path === false) {
-            throw new \Graphity\Exception("Could not parse URI: '{$uri}'.");
+            throw new \Graphity\WebApplicationException(Response::SC_BAD_REQUEST, "Could not parse URI: '{$uri}'.");
         }
 
         return $this->matchPath($path);
@@ -146,7 +146,7 @@ class Router
         $path = parse_url($request->getRequestURI(), PHP_URL_PATH);
         
         if($path === false) {
-            throw new \Graphity\Exception("Could not parse URI: '{$request->getRequestURI()}'.");
+            throw new \Graphity\WebApplicationException(Response::SC_BAD_REQUEST, "Could not parse URI: '{$request->getRequestURI()}'.");
         }
 
         return $this->matchPath($path);
@@ -168,7 +168,7 @@ class Router
         $requestMethod = $resource->getRequest()->getMethod();
 
         if(!array_key_exists($requestMethod, $listOfRoutes)) {
-            throw new \Graphity\Exception("Could not match method '{$requestMethod}' on resource '{$className}'.");
+            throw new \Graphity\WebApplicationException(Response::SC_METHOD_NOT_ALLOWED, "Method '{$requestMethod}' not allowed on resource '{$className}'.");
         }
         $contentType = $resource->getRequest()->getContentType();
         if(($pos = strpos($contentType, ";")) > 0) {

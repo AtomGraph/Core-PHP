@@ -24,6 +24,7 @@ namespace Graphity;
 
 use Graphity\Util\UriBuilder;
 use Graphity\Exception;
+use Graphity\WebApplicationException;
 
 /**
  * An abstract HTTP Resource for subclassing. It should be specified as a base class in Propel schema.
