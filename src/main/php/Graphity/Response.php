@@ -221,10 +221,12 @@ class Response implements ResponseInterface
             header($name . ": " . $value, true);
         }
         
+        /*
         if($this->getBuffer() !== null) {
             header(sprintf("Content-Length: %d", mb_strlen($this->getBuffer())));
             echo $this->getBuffer();
         }
+        */
     }
 
 }
