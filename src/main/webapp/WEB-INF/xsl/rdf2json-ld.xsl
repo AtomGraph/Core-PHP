@@ -113,11 +113,13 @@ exclude-result-prefixes="xsl rdf">
     </xsl:template>
 
     <!-- object XMLLiteral -->
+    <!--
     <xsl:template match="*[@rdf:about or @rdf:nodeID]/*[@rdf:datatype = '&rdf;XMLLiteral']/*">
         <xsl:text>"@literal": "</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>"</xsl:text>
     </xsl:template>
+    -->
 
     <xsl:template match="node()"/>
 
