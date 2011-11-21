@@ -34,7 +34,7 @@ class Integer extends ParameterAbstract
 
     public function __construct($value) {
         if(is_numeric($value) === false) {
-            throw new \RuntimeException("Invalid integer value.");
+            throw new \Graphity\Exception("Invalid integer value.");
         }
 
         $this->value = $value;

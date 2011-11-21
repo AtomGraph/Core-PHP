@@ -358,7 +358,7 @@ class Model implements \Iterator, \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        throw new \RuntimeException("Consider using addArray/addStatement methods instead.");
+        throw new \Graphity\Exception("Consider using addArray/addStatement methods instead.");
     }
 
 	/* (non-PHPdoc)
@@ -366,6 +366,6 @@ class Model implements \Iterator, \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        throw new \RuntimeException("Consider using removeStatement/removeArray/removeAll methods instead.");
+        throw new \Graphity\Exception("Consider using removeStatement/removeArray/removeAll methods instead.");
     }
 }

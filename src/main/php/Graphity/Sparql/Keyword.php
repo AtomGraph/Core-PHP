@@ -71,11 +71,11 @@ class Keyword extends ParameterAbstract
 
     public function __construct($value) {
         if(is_string($value) === false) {
-            throw new \RuntimeException("Sparql keyword must be a string.");
+            throw new \Graphity\Exception("Sparql keyword must be a string.");
         }
 
         if(in_array(strtoupper($value), self::$validKeywords) === false) {
-            throw new \RuntimeException("Invalid sparql keyword.");
+            throw new \Graphity\Exception("Invalid sparql keyword.");
         }
 
         $this->value = $value;
