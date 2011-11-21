@@ -123,7 +123,8 @@ class Router
     {
         $className = $this->matchRequest($request);
         if($className === null) {
-            throw new \Graphity\Exception("Could not map route to resource: '{$request->getRequestURI()}'.");
+            //throw new \Graphity\Exception("Could not map route to resource: '{$request->getRequestURI()}'.");
+            throw new \Graphity\WebApplicationException(Response::SC_NOT_FOUND, "Resource not found");
         }
 
         $resource = new $className($request, $this);
