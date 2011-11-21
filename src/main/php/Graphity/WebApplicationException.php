@@ -39,9 +39,11 @@ class WebApplicationException extends Exception
 
     public function toModel()
     {
-        $model = new Rdf\Model();
+        $model = parent::toModel();
 
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::NS)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::WebApplicationException)));
+
+        return $model;
     }
 
 }
