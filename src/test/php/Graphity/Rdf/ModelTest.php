@@ -3,6 +3,7 @@
 namespace Graphity\Tests\Rdf;
 
 use Graphity\Rdf as GR;
+use Graphity\Vocabulary\Rdf;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,6 +14,8 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     protected static $ARRAY = null;
     
     protected static $STATEMENT = null;
+
+    protected static $DOM = null;
     
     const TURTLE = '<http://example.org/item/1> <http://rdf.org/#type> "test:TestPost" .
 <http://example.org/item/1> <http://foaf.org/#depiction> <http://example.org/images/test.png> .
@@ -37,6 +40,34 @@ _:b2 <http://rdf.org/#rest> <http://rdf.org/#nil> .
         );
         
         self::$STATEMENT = new GR\Statement(new GR\Resource("http://example.org/item/1"), new GR\Resource("http://sioc.org/#title"), new GR\Literal("Funny"));
+
+        self::$DOM = new \DOMDocument("1.0", "UTF-8");
+        $rdfElem = self::$DOM->appendChild(self::$DOM->createElementNS(Rdf::NS, "rdf:RDF"));
+
+        $item1Elem = $rdfElem->appendChild(self::$DOM->createElementNS(Rdf::NS, "rdf:Description"));
+        $item1Elem->setAttributeNS(Rdf::NS, "rdf:about", "http://example.org/item/1");
+        $typeElem = $item1Elem->appendChild(self::$DOM->createElementNS("http://rdf.org/#", "tmp:type")); // properties get tmp: prefix
+        $typeElem->appendChild(self::$DOM->createTextNode("test:TestPost"));
+        $depictionElem = $item1Elem->appendChild(self::$DOM->createElementNS("http://foaf.org/#", "tmp:depiction"));
+        $depictionElem->setAttributeNS(Rdf::NS, "rdf:resource", "http://example.org/images/test.png");
+        $contentElem = $item1Elem->appendChild(self::$DOM->createElementNS("http://sioc.org/#", "tmp:content"));
+        $contentElem->appendChild(self::$DOM->createTextNode("Example Test Post Content"));
+        $hasPartElem = $item1Elem->appendChild(self::$DOM->createElementNS("http://dct.org/#", "tmp:hasPart"));
+        $hasPartElem->setAttributeNS(Rdf::NS, "rdf:nodeID", "b1");
+
+        $bnode1Elem = $rdfElem->appendChild(self::$DOM->createElementNS(Rdf::NS, "rdf:Description"));
+        $bnode1Elem->setAttributeNS(Rdf::NS, "rdf:nodeID", "b1");
+        $first1Elem = $bnode1Elem->appendChild(self::$DOM->createElementNS("http://rdf.org/#", "tmp:first"));
+        $first1Elem->setAttributeNS(Rdf::NS, "rdf:resource", "http://example.org/item/1#sub1");
+        $rest1Elem = $bnode1Elem->appendChild(self::$DOM->createElementNS("http://rdf.org/#", "tmp:rest"));
+        $rest1Elem->setAttributeNS(Rdf::NS, "rdf:nodeID", "b2");
+
+        $bnode2Elem = $rdfElem->appendChild(self::$DOM->createElementNS(Rdf::NS, "rdf:Description"));
+        $bnode2Elem->setAttributeNS(Rdf::NS, "rdf:nodeID", "b2");
+        $first2Elem = $bnode2Elem->appendChild(self::$DOM->createElementNS("http://rdf.org/#", "tmp:first"));
+        $first2Elem->setAttributeNS(Rdf::NS, "rdf:resource", "http://example.org/item/1#sub2");
+        $rest2Elem = $bnode2Elem->appendChild(self::$DOM->createElementNS("http://rdf.org/#", "tmp:rest"));
+        $rest2Elem->setAttributeNS(Rdf::NS, "rdf:resource", "http://rdf.org/#nil");
     }
     
     public function test_addArray() {
@@ -211,5 +242,13 @@ _:b2 <http://rdf.org/#rest> <http://rdf.org/#nil> .
         $model->addArray(self::$ARRAY);
         $this->assertEquals(self::TURTLE, (string)$model);
     }
-    
+
+    public function test_toDOM() {
+        $model = new GR\Model();
+        $model->addArray(self::$ARRAY);
+        //var_dump(self::$DOM->saveXML()); 
+        //var_dump($model->toDOM()->saveXML()); exit;
+        $this->assertEqualXMLStructure(self::$DOM->documentElement, $model->toDOM()->documentElement);
+    }
+
 }

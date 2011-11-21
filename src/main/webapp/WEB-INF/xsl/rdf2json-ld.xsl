@@ -18,6 +18,7 @@ limitations under the License.
 xmlns="http://www.w3.org/1999/xhtml"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:php="http://php.net/xsl"
 exclude-result-prefixes="xsl rdf">
 
     <!-- converts RDF/XML to JSON-LD -->
@@ -111,6 +112,25 @@ exclude-result-prefixes="xsl rdf">
         <xsl:text>"</xsl:text>
     </xsl:template>
 
+    <!-- object XMLLiteral -->
+    <xsl:template match="*[@rdf:about or @rdf:nodeID]/*[@rdf:datatype = '&rdf;XMLLiteral']/*">
+        <xsl:text>"@literal": "</xsl:text>
+        <xsl:value-of select="."/>
+        <xsl:text>"</xsl:text>
+    </xsl:template>
+
     <xsl:template match="node()"/>
+
+    <xsl:template match="@* | node()" mode="json-identity">
+        <xsl:copy>
+            <xsl:apply-templates select="@* | node()" mode="json-identity"/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="text()" mode="json-identity">
+        <!-- <xsl:value-of select="php:function('json_encode', string(.))"/> -->
+        <!-- for some reason json_encode() adds extra quotes which need to be removed -->
+        <xsl:value-of select="php:function('trim', php:function('json_encode', string(.)), '&quot;')"/>
+    </xsl:template>
 
 </xsl:stylesheet>

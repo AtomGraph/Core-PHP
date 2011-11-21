@@ -22,7 +22,8 @@ exclude-result-prefixes="xsl rdf">
 
     <!-- groups triples in RDF/XML by subject to ease further XSLT processing -->
 
-    <xsl:key name="resources" match="*[@rdf:about] | *[@rdf:nodeID]" use="@rdf:about | @rdf:nodeID"/>
+    <!-- only match subjects (i.e. elements that have property children) -->
+    <xsl:key name="resources" match="*[*][@rdf:about] | *[*][@rdf:nodeID]" use="@rdf:about | @rdf:nodeID"/>
 
     <xsl:template match="rdf:RDF">
         <xsl:copy>
