@@ -28,7 +28,7 @@ use Graphity\Vocabulary as Vocabulary;
 /**
  * This should be the root of all Graphity Exceptions
  */
-class Exception extends \ErrorException
+class Exception extends \RuntimeException
 {
     public function toModel()
     {
