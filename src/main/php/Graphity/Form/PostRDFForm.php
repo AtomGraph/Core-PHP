@@ -33,7 +33,7 @@ class PostRDFForm extends RDFForm
 
         // check if we have the data
         if(count($this->getModel()->getStatements()) === 0) {
-            throw new WebApplicationException(Response::SC_BAD_REQUEST, "Form data is missing.");
+            throw new WebApplicationException("Form data is missing", Response::SC_BAD_REQUEST);
         }
 
         return $errors;

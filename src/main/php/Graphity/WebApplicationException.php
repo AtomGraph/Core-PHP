@@ -32,10 +32,6 @@ use Graphity\Vocabulary as Vocabulary;
  */
 class WebApplicationException extends Exception
 {
-    public function __construct($code, $message = "Web application exception")
-    {
-        parent::__construct($message, $code);
-    }
 
     public function toModel()
     {
