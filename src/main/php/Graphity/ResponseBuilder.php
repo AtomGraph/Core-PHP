@@ -106,7 +106,7 @@ class ResponseBuilder {
      *  @return Graphity\ResponseBuilder
      */
     public function entity($body) {
-        $this->response->write($body);
+        fwrite($this->response->getWriter(), $body);
 
         return $this;
     }

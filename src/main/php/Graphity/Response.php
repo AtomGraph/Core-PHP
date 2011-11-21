@@ -36,11 +36,23 @@ class Response implements ResponseInterface
 
     private $buffer = "";
 
+    private $writer = null;
+
     private $status = null;
 
     private $contentType = null;
 
     private $encoding = null;
+
+
+    /**
+     *  Constructs new response.
+     */
+
+    public function __construct()
+    {
+        $this->writer = fopen("php://output", "w");
+    }
 
     /**
      *  Adds the specified cookie to the response.
@@ -165,19 +177,55 @@ class Response implements ResponseInterface
      *
      *  @param string $string String
      */
+    /*
     public function write($string)
     {
         $this->buffer .= $string;
     }
+    */
 
     /**
      *  Returns the whole response output buffer.
      *
      *  @return string Buffer string
      */
+     /*
     public function getBuffer()
     {
         return $this->buffer;
     }
+    */
+
+    public function getWriter()
+    {
+        return $this->writer;
+    }
+
+    /**
+     * Sets HTTP response headers.
+     *
+     * @param Response $response Response to write out and to send to the client
+     */
+    public final function commit()
+    {
+        header("HTTP/1.1 " . (string)$this->getStatus());
+        if($this->getContentType() != null) {
+            if($this->getCharacterEncoding() != null) {
+                header("Content-Type: " . $this->getContentType() . "; charset=" . $this->getCharacterEncoding());
+            } else {
+                header("Content-Type: " . $this->getContentType());
+            }
+        }
+        
+        foreach($this->getHeaders() as $name => $value) {
+            header($name . ": " . $value, true);
+        }
+        
+        if($this->getBuffer() !== null) {
+            header(sprintf("Content-Length: %d", mb_strlen($this->getBuffer())));
+            echo $this->getBuffer();
+        }
+    }
+
 }
 

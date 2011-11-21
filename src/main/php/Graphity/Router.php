@@ -79,7 +79,7 @@ class Router
         $path = parse_url($uri, PHP_URL_PATH);
         
         if($path === false) {
-            throw new \Graphity\WebApplicationException(Response::SC_BAD_REQUEST, "Could not parse URI: '{$uri}'.");
+            throw new \Graphity\WebApplicationException("Could not parse URI: '{$uri}'", Response::SC_BAD_REQUEST);
         }
 
         return $this->matchPath($path);
@@ -124,7 +124,7 @@ class Router
         $className = $this->matchRequest($request);
         if($className === null) {
             //throw new \Graphity\Exception("Could not map route to resource: '{$request->getRequestURI()}'.");
-            throw new \Graphity\WebApplicationException(Response::SC_NOT_FOUND, "Resource not found");
+            throw new \Graphity\WebApplicationException("Resource not found", Response::SC_NOT_FOUND);
         }
 
         $resource = new $className($request, $this);
@@ -146,7 +146,7 @@ class Router
         $path = parse_url($request->getRequestURI(), PHP_URL_PATH);
         
         if($path === false) {
-            throw new \Graphity\WebApplicationException(Response::SC_BAD_REQUEST, "Could not parse URI: '{$request->getRequestURI()}'.");
+            throw new \Graphity\WebApplicationException("Could not parse URI: '{$request->getRequestURI()}'", Response::SC_BAD_REQUEST);
         }
 
         return $this->matchPath($path);
@@ -168,7 +168,7 @@ class Router
         $requestMethod = $resource->getRequest()->getMethod();
 
         if(!array_key_exists($requestMethod, $listOfRoutes)) {
-            throw new \Graphity\WebApplicationException(Response::SC_METHOD_NOT_ALLOWED, "Method '{$requestMethod}' not allowed on resource '{$className}'.");
+            throw new \Graphity\WebApplicationException("Method '{$requestMethod}' not allowed on resource '{$className}'", Response::SC_METHOD_NOT_ALLOWED);
         }
         $contentType = $resource->getRequest()->getContentType();
         if(($pos = strpos($contentType, ";")) > 0) {

@@ -173,63 +173,25 @@ abstract class Resource implements ResourceInterface
     abstract public function exists();
 
     /**
-     * Sets HTTP response headers and writes out the buffer.
-     *
-     * @param Response $response Response to write out and to send to the client
-     */
-    protected final function output()
-    {
-        header("HTTP/1.1 " . (string)$this->getResponse()->getStatus());
-        if($this->getResponse()->getContentType() != null) {
-            if($this->getResponse()->getCharacterEncoding() != null) {
-                header("Content-Type: " . $this->getResponse()->getContentType() . "; charset=" . $this->getResponse()->getCharacterEncoding());
-            } else {
-                header("Content-Type: " . $this->getResponse()->getContentType());
-            }
-        }
-        
-        foreach($this->getResponse()->getHeaders() as $name => $value) {
-            header($name . ": " . $value, true);
-        }
-        
-        if($this->getResponse()->getBuffer() !== null) {
-            header(sprintf("Content-Length: %d", mb_strlen($this->getResponse()->getBuffer())));
-            echo $this->getResponse()->getBuffer();
-        }
-    }
-
-    /**
      * Processes the HTTP Request. Finds an appropriate Resource, passes the control to it, and displays the resulting View.
      */
     public final function process()
     {
-        //try {
-            $ref = new \ReflectionAnnotatedClass($this);
-            if($ref->hasAnnotation('Singleton') === false && $this->exists() === false) {
-                throw new WebApplicationException(Response::SC_NOT_FOUND, "Resource not found");
-            }
-            if (!$this->authorize()) {
-                throw new WebApplicationException(Response::SC_FORBIDDEN, "Access denied");
-            }
-
-            $methodName = $this->getRouter()->matchMethod($this);
-            if($methodName === null) {
-                $this->getResponse()->setStatus(Response::SC_METHOD_NOT_ALLOWED);
-            } else {
-                $this->setResponse($this->$methodName());
-                if($this->getResponse() instanceof View)
-                    $this->getResponse()->display();
-            }
-        //}
-        // looks like we shouldn't catch Exceptions here in the parent class?
-        /*
-        catch(Exception $e) {
-            $this->log($e);
-            $this->setResponse(new ExceptionView($e, $this->getRequest())); // ExceptionView not known at this point!
-            $this->getResponse()->display();
+        $ref = new \ReflectionAnnotatedClass($this);
+        if($ref->hasAnnotation('Singleton') === false && $this->exists() === false) {
+            throw new WebApplicationException("Resource not found", Response::SC_NOT_FOUND);
         }
-        */
-        $this->output();  
+        if (!$this->authorize()) {
+            throw new WebApplicationException("Access denied", Response::SC_FORBIDDEN);
+        }
+
+        $methodName = $this->getRouter()->matchMethod($this);
+        $this->setResponse($this->$methodName());
+
+        if($this->getResponse() instanceof View)
+            $this->getResponse()->display();
+
+        $this->getResponse()->commit();
     }
 
     protected function authorize() {

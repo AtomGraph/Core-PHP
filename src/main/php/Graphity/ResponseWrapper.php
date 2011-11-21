@@ -77,14 +77,9 @@ class ResponseWrapper implements ResponseInterface
         $this->response->sendRedirect($uri);
     }
 
-    public function write($string)
+    public function getWriter()
     {
-        $this->response->write($string);
-    }
-
-    public function getBuffer()
-    {
-        return $this->response->getBuffer();
+        return $this->response->getWriter();
     }
 }
 

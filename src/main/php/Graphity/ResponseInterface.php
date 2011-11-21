@@ -110,8 +110,5 @@ interface ResponseInterface
 
     function sendRedirect($url);
 
-    function write($string); // not in Java Servlet API
-
-    function getBuffer(); // not in Java Servlet API
 }
 

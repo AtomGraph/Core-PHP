@@ -37,6 +37,7 @@ abstract class View extends Response
     
     public function __construct(Resource $resource)
     {
+        parent::__construct();
         $this->resource = $resource;
         $this->setStatus(Response::SC_OK);
         $this->setCharacterEncoding("UTF-8");
