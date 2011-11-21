@@ -289,7 +289,7 @@ class Model implements \Iterator, \ArrayAccess
 
         // group triples by subject (eases XSLT processing. Jena RDF/XML writer does the same)
         $xsl = new \DOMDocument();
-        $xsl->load("C:\Users\Pumba\WebRoot\heltnormalt\lib\graphity\src\main\webapp\WEB-INF\xsl\group-triples.xsl"); // TO-DO: make generic!!!
+        $xsl->load(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "group-triples.xsl");
         $transformer = new \XSLTProcessor();
         $transformer->importStyleSheet($xsl);
         $doc = $transformer->transformToDoc($doc);
