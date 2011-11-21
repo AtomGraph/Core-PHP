@@ -158,15 +158,15 @@ class Statement implements \ArrayAccess
             case 'lang':
                 return ($this->object->isLiteral()) ? $this->object->getLanguage() : null;
             default:
-                throw new \RuntimeException("Unknown field: '" . $offset . "'");
+                throw new \Graphity\Exception("Unknown field: '" . $offset . "'");
         }
     }
     
     public function offsetSet($offset, $value) {
-        throw new \RuntimeException("Can not set statement values using array interface. Consider using Statement::get* methods.");
+        throw new \Graphity\Exception("Can not set statement values using array interface. Consider using Statement::get* methods.");
     }
     
     public function offsetUnset($offset) {
-        throw new \RuntimeException("Can not unset statement values using array interface. Consider removing Statement from model.");
+        throw new \Graphity\Exception("Can not unset statement values using array interface. Consider removing Statement from model.");
     }
 }

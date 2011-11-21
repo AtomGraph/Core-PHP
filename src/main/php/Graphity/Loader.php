@@ -106,7 +106,7 @@ class Loader
             $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . ".php";
 
             //if(file_exists(($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName) === false) {
-            //    throw new \RuntimeException("Could not load: '{$className}'.");
+            //    throw new \Graphity\Exception("Could not load: '{$className}'.");
             //}
 
             include_once ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;

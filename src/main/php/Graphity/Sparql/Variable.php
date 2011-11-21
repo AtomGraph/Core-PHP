@@ -34,11 +34,11 @@ class Variable extends ParameterAbstract
 
     public function __construct($value) {
         if(is_string($value) === false) {
-            throw new \RuntimeException("Invalid variable name value.");
+            throw new \Graphity\Exception("Invalid variable name value.");
         }
         
         if(preg_match('/[^a-z0-9_]/i', $value) === 1) {
-            throw new \RuntimeException("Sparql variable name can only contain alphanumerics.");
+            throw new \Graphity\Exception("Sparql variable name can only contain alphanumerics.");
         }
 
         $this->value = $value;
