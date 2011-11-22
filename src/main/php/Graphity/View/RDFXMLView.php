@@ -39,7 +39,7 @@ class RDFXMLView extends View
 
     public function display()
     {
-        fwrite($this->getWriter(), $this->getResource()->describe());
+        fwrite($this->getWriter(), $this->getResource()->describe()->saveXML());
     }
 
 }

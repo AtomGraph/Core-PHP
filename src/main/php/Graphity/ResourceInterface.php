@@ -44,5 +44,27 @@ interface ResourceInterface
      *  @return string
      */
     function getPath();
+
+    /**
+     * Check if resource exists.
+     * 
+     * @return boolean
+     */
+    function exists();
+
+    /**
+     * Check if agent has access to resource.
+     * 
+     * @return boolean
+     */
+    function authorize();
+
+    /**
+     * Returns description of the resource (usually as RDF/XML).
+     * 
+     * @return DOMDocument
+     */
+    function describe();
+
 }
 
