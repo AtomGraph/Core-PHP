@@ -23,6 +23,9 @@ exclude-result-prefixes="xsl rdf">
 
     <!-- converts RDF/XML to JSON-LD -->
 
+	<xsl:output indent="no" omit-xml-declaration="yes" method="text" encoding="UTF-8" media-type="application/json"/>
+	<xsl:strip-space elements="*"/>
+
     <xsl:template match="rdf:RDF">
         <xsl:text>[</xsl:text>
             <xsl:apply-templates/>
