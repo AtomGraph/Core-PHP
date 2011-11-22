@@ -25,12 +25,14 @@ namespace Graphity;
 use Graphity\Util\UriBuilder;
 use Graphity\Exception;
 use Graphity\WebApplicationException;
+use Graphity\Rdf as Rdf;
+use Graphity\Sparql as Sparql;
 
 /**
  * An abstract HTTP Resource for subclassing. It should be specified as a base class in Propel schema.
  * If used without Propel, it should not extend BaseObject.
  */
-abstract class Resource implements ResourceInterface
+class Resource implements ResourceInterface
 {
     /**
      * @var string
@@ -166,11 +168,11 @@ abstract class Resource implements ResourceInterface
     /**
      * Check if resource exists.
      * 
-     * @param string $uri
-     * 
      * @return boolean
      */
-    abstract public function exists();
+    public function exists() {
+        return true;
+    }
 
     /**
      * Processes the HTTP Request. Finds an appropriate Resource, passes the control to it, and displays the resulting View.
@@ -194,10 +196,29 @@ abstract class Resource implements ResourceInterface
         $this->getResponse()->commit();
     }
 
-    protected function authorize() {
+    /**
+     * Check if agent has access to resource.
+     * 
+     * @return boolean
+     */
+    public function authorize() {
         return true;
     }
 
-    protected abstract function describe(); // move to ResourceInterface if this works OK
+    /**
+     * Returns DOM description of the resource (usually as RDF/XML).
+     * 
+     * @return DOMDocument
+     */
+    public function describe() {
+        $fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "sparql" . DIRECTORY_SEPARATOR . "describe.rq";
+
+        $queryString = file_get_contents($fileName);
+
+        // TO-DO! Repository classes still not in Graphity
+        return $this->getRepository()->ask(Sparql\Query::newInstance()
+            ->setQuery($queryString)
+            ->setVariable('uri', new Rdf\Resource($this->getURI())));
+    }
 
 }
