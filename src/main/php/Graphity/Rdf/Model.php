@@ -26,7 +26,7 @@ use Graphity\Vocabulary\Rdf;
 
 /**
  * An RDF Model.
- * 
+ *
  * Based on Jena: http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/rdf/model/Model.html
  */
 class Model implements \Iterator, \ArrayAccess
@@ -35,7 +35,7 @@ class Model implements \Iterator, \ArrayAccess
      * @var array
      */
     protected $listOfStatements = array();
-    
+
     /**
      * @var integer
      */
@@ -43,27 +43,27 @@ class Model implements \Iterator, \ArrayAccess
 
     /**
      * Add all the statements in the array to the model
-     * 
+     *
      * @param array $statements
-     * 
+     *
      * @return Model
      */
     public function addArray(array $listOfStatements) {
         $this->listOfStatements = array_merge($this->listOfStatements, $listOfStatements);
-        
+
         return $this;
     }
-    
+
     /**
      * Add a statement to the model
-     * 
+     *
      * @param Statement $statement
-     * 
+     *
      * return Model
      */
     public function addStatement(Statement $statement) {
         $this->listOfStatements[] = $statement;
-        
+
         return $this;
     }
 
@@ -85,12 +85,12 @@ class Model implements \Iterator, \ArrayAccess
 
         return false;
     }
-    
+
     /**
      * Return true if this Model has at least one identical statement.
      *
      * @param Statement $stmt
-     * 
+     *
      * @return boolean
      */
     public function containsStatement(Statement $stmt) {
@@ -142,7 +142,7 @@ class Model implements \Iterator, \ArrayAccess
     }
 
     /**
-     * Answer an iterator over all the resources in 
+     * Answer an iterator over all the resources in
      * this model that have property p with value o.
      *
      * @param RDFResource $p
@@ -161,21 +161,21 @@ class Model implements \Iterator, \ArrayAccess
 
         return $list;
     }
-    
+
     /**
      * Return array with statements
-     * 
+     *
      * @return array
      */
     public function getStatements() {
         return $this->listOfStatements;
     }
-    
+
     /**
      * Remove all statements in array from the model.
-     * 
+     *
      * @param array $listOfStatements
-     * 
+     *
      * @return Model
      */
     public function removeArray(array $listOfStatements) {
@@ -190,15 +190,15 @@ class Model implements \Iterator, \ArrayAccess
             }
         }
         $this->listOfStatements = array_values($this->listOfStatements);
-        
+
         return $this;
     }
-    
+
     /**
      * Remove statement from the model.
-     * 
+     *
      * @param Statement $toDelete
-     * 
+     *
      * @return Model
      */
     public function removeStatement(Statement $toDelete) {
@@ -210,26 +210,43 @@ class Model implements \Iterator, \ArrayAccess
                 break;
             }
         }
-        
+
         $this->listOfStatements = array_values($this->listOfStatements);
-        
+
         return $this;
     }
-    
+
     /**
      * Remove all statements from this model.
-     * 
+     *
      * @return Model
      */
     public function removeAll() {
         $this->listOfStatements = array();
-        
+
         return $this;
     }
-    
+
+    /**
+     * Create a new, independent model containing all the statements
+     * in this model together with all of those in another given
+     * model. By _independent_ we mean that changes to the result
+     * model do not affect the operand models, and vice versa.
+     */
+    public function union(Model $model) {
+        $result = new Model();
+
+        // @TODO: this should probably check statement existence to
+        // avoid repeated statements.
+        $result->addArray($this->getStatements());
+        $result->addArray($model->getStatements());
+
+        return $result;
+    }
+
     /**
      * Magically return string representation of this model.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -237,7 +254,7 @@ class Model implements \Iterator, \ArrayAccess
         foreach($this->getStatements() as $stmt) {
             $data .= (string)$stmt;
         }
-        
+
         return $data;
     }
 
@@ -256,7 +273,7 @@ class Model implements \Iterator, \ArrayAccess
             // subject
             if ($stmt->getSubject()->isAnonymous()) $descElem->setAttributeNS(Rdf::NS, "rdf:nodeID", $stmt->getSubject()->getAnonymousId());
             if ($stmt->getSubject()->isURIResource()) $descElem->setAttributeNS(Rdf::NS, "rdf:about", $stmt->getSubject()->getURI());
-            
+
             // property
             $nsUri = $localName = null;
             // try predicate local name as substring after #
@@ -336,7 +353,7 @@ class Model implements \Iterator, \ArrayAccess
     {
         $this->it = 0;
     }
-    
+
 	/* (non-PHPdoc)
      * @see ArrayAccess::offsetExists()
      */
