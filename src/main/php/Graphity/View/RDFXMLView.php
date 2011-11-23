@@ -35,10 +35,7 @@ class RDFXMLView extends View
         $this->setCharacterEncoding("UTF-8");
         $this->setContentType(ContentType::APPLICATION_RDF_XML);
         $this->setStatus(Response::SC_OK);
-    }
 
-    public function display()
-    {
         fwrite($this->getWriter(), $this->getResource()->describe()->saveXML());
     }
 

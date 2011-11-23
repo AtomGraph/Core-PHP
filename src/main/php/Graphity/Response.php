@@ -206,7 +206,7 @@ class Response implements ResponseInterface
      *
      * @param Response $response Response to write out and to send to the client
      */
-    public final function commit()
+    public final function flushBuffer()
     {
         header("HTTP/1.1 " . (string)$this->getStatus());
         if($this->getContentType() != null) {

@@ -61,6 +61,15 @@ class XSLTBuilder {
         return self::newInstance()->stylesheet($stylesheet);
     }
 
+    public static function fromStylesheetURI($uri)
+    {
+        $doc = new \DOMDocument();
+        $doc->resolveExternals = true;
+        $doc->substituteEntities = true;
+        $doc->load($uri);
+        return self::newInstance()->stylesheet($doc);
+    }
+
     public function document(\DOMDocument $doc)
     {
         $doc->formatOutput = true;
@@ -70,8 +79,6 @@ class XSLTBuilder {
 
     public function stylesheet(\DOMDocument $stylesheet)
     {
-        $stylesheet->resolveExternals = true;
-        $stylesheet->substituteEntities = true;
         $this->transformer->importStylesheet($stylesheet);
         return $this;
     }
