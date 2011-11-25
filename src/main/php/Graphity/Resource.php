@@ -190,10 +190,6 @@ class Resource implements ResourceInterface
         $methodName = $this->getRouter()->matchMethod($this);
         $this->setResponse($this->$methodName());
 
-        // remove after Views are removed!
-        if($this->getResponse() instanceof View)
-            $this->getResponse()->display();
-
         $this->getResponse()->flushBuffer();
     }
 

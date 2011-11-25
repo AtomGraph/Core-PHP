@@ -25,9 +25,8 @@ namespace Graphity\View;
 use Graphity\Resource;
 use Graphity\Response;
 use Graphity\Util\XSLTBuilder;
-use Graphity\View;
 
-class JSONLDView extends View
+class JSONLDView extends Response
 {
     public function __construct(Resource $resource)
     {
@@ -35,15 +34,12 @@ class JSONLDView extends View
         $this->setCharacterEncoding("UTF-8");
         $this->setContentType(ContentType::APPLICATION_JSON);
         $this->setStatus(Response::SC_OK);
-    }
 
-    public function display()
-    {
-		$styleSheet = new \DOMDocument();
+		$styleSheet = new \DOMDocument("1.0", "UTF-8");
 		$styleSheet->load(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "rdf2json-ld.xsl");
 
         fwrite($this->getWriter(), XSLTBuilder::fromStylesheet($styleSheet)->
-            document($this->getResource()->describe())->
+            document($resource->describe())->
             build()->
             saveXML());
     }

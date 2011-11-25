@@ -25,9 +25,8 @@ namespace Graphity\View;
 use Graphity\Resource;
 use Graphity\Response;
 use Graphity\Util\URIResolver;
-use Graphity\View;
 
-class RDFXMLView extends View
+class RDFXMLView extends Response
 {
     public function __construct(Resource $resource)
     {
@@ -36,7 +35,7 @@ class RDFXMLView extends View
         $this->setContentType(ContentType::APPLICATION_RDF_XML);
         $this->setStatus(Response::SC_OK);
 
-        fwrite($this->getWriter(), $this->getResource()->describe()->saveXML());
+        fwrite($this->getWriter(), $resource->describe()->saveXML());
     }
 
 }

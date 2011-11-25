@@ -23,6 +23,7 @@
 namespace Graphity\Util;
 
 use Graphity\Util\StringStream;
+use Graphity\Exception;
 
 /**
  * Serves a (XML) string from memory as a stream.
@@ -45,7 +46,8 @@ class URIResolver
     {
         $this->scheme = $scheme;
         if(! in_array($scheme, stream_get_wrappers())) {
-            stream_wrapper_register($scheme, "Graphity\\Util\\StringStream") or die("Failed to register '" . $scheme . "'");
+            stream_wrapper_register($scheme, "Graphity\\Util\\StringStream");
+            //or throw new Exception("Failed to register '" . $scheme . "'");
         }
     }
 
@@ -53,10 +55,10 @@ class URIResolver
      * Sets XML string as an argument (side document) which is later passed to XSLT stylesheet.
      *
      * @param string $name Name of the argument
-     * @param string $xml XML string
+     * @param DOMDocument $doc XML document
      */
-    public function setArgument($name, $xml)
+    public function setArgument($name, \DOMDocument $doc)
     {
-        self::$xslArgs[$name] = $xml;
+        self::$xslArgs[$name] = $doc->saveXML(); // could be refactored more nicely?
     }
 }

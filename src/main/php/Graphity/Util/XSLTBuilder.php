@@ -63,7 +63,7 @@ class XSLTBuilder {
 
     public static function fromStylesheetURI($uri)
     {
-        $doc = new \DOMDocument();
+        $doc = new \DOMDocument("1.0", "UTF-8");
         $doc->resolveExternals = true;
         $doc->substituteEntities = true;
         $doc->load($uri);
@@ -86,6 +86,18 @@ class XSLTBuilder {
     public function parameter($namespace, $name, $value)
     {
         $this->transformer->setParameter($namespace, $name, $value);
+        return $this;
+    }
+
+    public function resolver(URIResolver $resolver)
+    {
+        $this->resolver = $resolver;
+        return $this;
+    }
+
+    public function argument($name, \DOMDocument $argument)
+    {
+        $this->resolver->setArgument($name, $argument); // what if $this->resolver not set yet?
         return $this;
     }
 
