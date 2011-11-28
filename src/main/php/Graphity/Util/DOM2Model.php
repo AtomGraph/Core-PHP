@@ -66,9 +66,11 @@ class DOM2Model
                 {
                     // subject
                     $subject = $subjectId = null;
-                    $subjectId = "_:" . $subjectElem->getAttributeNS(Rdf::NS, "rdf:nodeID");
-                    $subjectId = $subjectElem->getAttributeNS(Rdf::NS, "rdf:ID");
-                    $subjectId = $subjectElem->getAttributeNS(Rdf::NS, "rdf:about");
+                    if ($subjectElem->getAttributeNS(Rdf::NS, "nodeID") != null)
+                        $subjectId = "_:" . $subjectElem->getAttributeNS(Rdf::NS, "nodeID");
+                    //$subjectId = $subjectElem->getAttributeNS(Rdf::NS, "ID");
+                    if ($subjectElem->getAttributeNS(Rdf::NS, "about") != null)
+                        $subjectId = $subjectElem->getAttributeNS(Rdf::NS, "about");
                     $subject = new Resource($subjectId);
 
                     foreach ($subjectElem->childNodes as $propertyElem)
@@ -76,7 +78,6 @@ class DOM2Model
                         {
                             // property
                             $property = $propertyUri = null;
-    var_dump($propertyElem);
                             if ($propertyElem->namespaceURI != null && $propertyElem->localName != null)
                                 $propertyUri = $propertyElem->namespaceURI . $propertyElem->localName;
                             if ($propertyUri != null) $property = new Property($propertyUri);
@@ -84,14 +85,16 @@ class DOM2Model
                            
                             // object
                             $object = $objectId = null;
-                            if ($propertyElem->getAttributeNS(Rdf::NS, "rdf:nodeID") != null)
-                                $objectId = "_:" . $propertyElem->getAttributeNS(Rdf::NS, "rdf:nodeID");
-                            if ($propertyElem->getAttributeNS(Rdf::NS, "rdf:resource") != null)
-                                $objectId = $propertyElem->getAttributeNS(Rdf::NS, "rdf:resource");
-                            if ($objectId != null)
-                                $object = new Resource($objectId);                        
+                            if ($propertyElem->getAttributeNS(Rdf::NS, "nodeID") != null)
+                                $objectId = "_:" . $propertyElem->getAttributeNS(Rdf::NS, "nodeID");
+                            if ($propertyElem->getAttributeNS(Rdf::NS, "resource") != null)
+                                $objectId = $propertyElem->getAttributeNS(Rdf::NS, "resource");
+                            if (strlen($propertyElem->nodeValue) == 0)
+                                $object = new Resource($objectId);      
                             else 
-                                $object = new Literal($propertyElem->nodeValue, $propertyElem->getAttributeNS(Rdf::NS, "rdf:datatype"), $propertyElem->getAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:lang"));
+                            {
+                                $object = new Literal($propertyElem->nodeValue, $propertyElem->getAttributeNS(Rdf::NS, "datatype"), $propertyElem->getAttributeNS("http://www.w3.org/XML/1998/namespace", "lang"));
+                            }
 
                             // add rdf:type if $subjectElem is not rdf:Description
                             $this->model->addStatement(new Statement($subject, $property, $object));
