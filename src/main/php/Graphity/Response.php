@@ -44,6 +44,7 @@ class Response implements ResponseInterface
 
     private $encoding = null;
 
+    private $committed = false;
 
     /**
      *  Constructs new response.
@@ -206,7 +207,7 @@ class Response implements ResponseInterface
      *
      * @param Response $response Response to write out and to send to the client
      */
-    public final function flushBuffer()
+    public final function commit()
     {
         header("HTTP/1.1 " . (string)$this->getStatus());
         if($this->getContentType() != null) {
@@ -220,6 +221,8 @@ class Response implements ResponseInterface
         foreach($this->getHeaders() as $name => $value) {
             header($name . ": " . $value, true);
         }
+
+        $this->committed = true;
         
         /*
         if($this->getBuffer() !== null) {
@@ -229,5 +232,14 @@ class Response implements ResponseInterface
         */
     }
 
+    public function flushBuffer()
+    {
+        if (!$this->committed) $this->getResponse()->commit();
+    }
+
+    public final function isCommitted()
+    {
+        return $this->committed;
+    }
 }
 

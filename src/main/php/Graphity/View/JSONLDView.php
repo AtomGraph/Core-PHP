@@ -28,18 +28,21 @@ use Graphity\Util\XSLTBuilder;
 
 class JSONLDView extends Response
 {
+    private $resource = null;
+
     public function __construct(Resource $resource)
     {
-        parent::__construct($resource);
+        parent::__construct();
+        $this->resource = $resource;
         $this->setCharacterEncoding("UTF-8");
         $this->setContentType(ContentType::APPLICATION_JSON);
         $this->setStatus(Response::SC_OK);
+    }
 
-		$styleSheet = new \DOMDocument("1.0", "UTF-8");
-		$styleSheet->load(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "rdf2json-ld.xsl");
-
-        fwrite($this->getWriter(), XSLTBuilder::fromStylesheet($styleSheet)->
-            document($resource->describe())->
+    public function flushBuffer()
+    {
+        fwrite($this->getWriter(), XSLTBuilder::fromStylesheetURI(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "rdf2json-ld.xsl")->
+            document($this->resource->describe())->
             build()->
             saveXML());
     }

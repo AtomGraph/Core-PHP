@@ -190,6 +190,7 @@ class Resource implements ResourceInterface
         $methodName = $this->getRouter()->matchMethod($this);
         $this->setResponse($this->$methodName());
 
+        $this->getResponse()->commit(); // write status and headers
         $this->getResponse()->flushBuffer();
     }
 

@@ -56,11 +56,11 @@ class DOM2Model
     // TO-DO: make it work recursively with hierarchical RDF/XML
     public function load(\DOMDocument $doc)
     {
-        if ($doc->documentElement->namespaceURI
+        if ($doc == null || $doc->documentElement->namespaceURI != Rdf::NS || $doc->documentElement->localName != "RDF")
             throw new Exception("Not a RDF/XML document");
 
-        if ($doc != null && $doc->hasChildNodes())
-            foreach ($doc->childNodes as $subjectElem)
+        if ($doc->documentElement != null && $doc->documentElement->hasChildNodes())
+            foreach ($doc->documentElement->childNodes as $subjectElem)
             {
                 if ($subjectElem->nodeType == XML_ELEMENT_NODE) // && $subjectElem->namespaceURI != null && $subjectElem->namespaceURI == Rdf::NS)
                 {
@@ -84,8 +84,10 @@ class DOM2Model
                            
                             // object
                             $object = $objectId = null;
-                            $objectId = $propertyElem->getAttributeNS(Rdf::NS, "rdf:nodeID");
-                            $objectId = $propertyElem->getAttributeNS(Rdf::NS, "rdf:resource");
+                            if ($propertyElem->getAttributeNS(Rdf::NS, "rdf:nodeID") != null)
+                                $objectId = "_:" . $propertyElem->getAttributeNS(Rdf::NS, "rdf:nodeID");
+                            if ($propertyElem->getAttributeNS(Rdf::NS, "rdf:resource") != null)
+                                $objectId = $propertyElem->getAttributeNS(Rdf::NS, "rdf:resource");
                             if ($objectId != null)
                                 $object = new Resource($objectId);                        
                             else 

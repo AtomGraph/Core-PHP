@@ -28,14 +28,19 @@ use Graphity\Util\URIResolver;
 
 class RDFXMLView extends Response
 {
+    private $resource = null;
+
     public function __construct(Resource $resource)
     {
-        parent::__construct($resource);
+        parent::__construct();
+        $this->resource = $resource;
         $this->setCharacterEncoding("UTF-8");
         $this->setContentType(ContentType::APPLICATION_RDF_XML);
         $this->setStatus(Response::SC_OK);
-
-        fwrite($this->getWriter(), $resource->describe()->saveXML());
     }
 
+    public function flushBuffer()
+    {
+        fwrite($this->getWriter(), $this->resource->describe()->saveXML());
+    }
 }
