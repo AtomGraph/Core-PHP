@@ -304,6 +304,7 @@ class Model implements \Iterator, \ArrayAccess
             $rdfElem->appendChild($descElem);
         }
 
+        // TO-DO: rewrite with XSLTBuilder!
         // group triples by subject (eases XSLT processing. Jena RDF/XML writer does the same)
         $xsl = new \DOMDocument("1.0", "UTF-8");
         $xsl->load(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "group-triples.xsl");

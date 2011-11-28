@@ -106,4 +106,9 @@ class XSLTBuilder {
         return $this->transformer->transformToDoc($this->doc);
     }
 
+    public function buildXML()
+    {
+        return $this->transformer->transformToXML($this->doc);
+    }
+
 }

@@ -27,7 +27,7 @@ interface ResourceInterface
     /**
      *  @see vhost.conf
      *
-     *  This is required for multpart/form-data request parsing.
+     *  This is required for multipart/form-data request parsing.
      */
     const MULTIPART_FORM = "multipart/form-data-alternate"; // comes from vhost.conf
 

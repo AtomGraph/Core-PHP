@@ -24,7 +24,6 @@ namespace Graphity\View;
 
 use Graphity\Resource;
 use Graphity\Response;
-use Graphity\Util\URIResolver;
 
 class RDFXMLView extends Response
 {
