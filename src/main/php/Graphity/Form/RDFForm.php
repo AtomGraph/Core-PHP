@@ -23,6 +23,8 @@
 namespace Graphity\Form;
 
 use Graphity;
+use Graphity\Request;
+use Graphity\FormInterface;
 use Graphity\Rdf\Model;
 use Graphity\Rdf\Literal;
 use Graphity\Rdf\Statement;
@@ -31,7 +33,7 @@ use Graphity\Rdf\Resource;
 /**
  *  Implementation of http://www.lsrn.org/semweb/rdfpost.html
  */
-class RDFForm extends Graphity\Form
+class RDFForm extends Request implements FormInterface
 {
 
     /**
@@ -45,28 +47,43 @@ class RDFForm extends Graphity\Form
 
     public function __construct()
     {
-        $this->setModel(new Model());
+        $this->model = new Model();
         $this->initParamMap();
         $this->initModel();
     }
 
     private function initParamMap()
     {
-        $postBody = stream_get_contents($this->getInputStream());
-        fclose($this->getInputStream());
-        
-        $params = explode("&", $postBody);
-        
-        foreach($params as $key => $param) {
-            $pair = explode("=", $param);
-            if(count($pair) > 1) {
-                $this->addKey(urldecode($pair[0]));
-                $this->addValue(urldecode($pair[1]));
+        if ($this->isMultipart())
+            while (($part = $parser->readNextPart()) != null)
+                if ($part->getName() != null)
+                {
+                    $this->addKey($part->getName());
+                    if ($part->isParam()) $this->addValue($part->getValue());
+                    if ($part->isFile())
+                    {
+                        $this->addValue($part->getTmpName());
+                        $part->writeTo($this->dir); // TO-DO: writing files doesn't really belong here
+                    }
+                }
+        else
+        {
+            $postBody = stream_get_contents($this->getInputStream());
+            fclose($this->getInputStream());
+            
+            $params = explode("&", $postBody);
+            
+            foreach($params as $key => $param) {
+                $pair = explode("=", $param);
+                if(count($pair) > 1) {
+                    $this->addKey(urldecode($pair[0]));
+                    $this->addValue(urldecode($pair[1]));
+                }
             }
         }
     }
 
-    protected function initModel()
+    private function initModel()
     {
         $subject = null;
         $predicate = null;
@@ -149,6 +166,13 @@ class RDFForm extends Graphity\Form
 
     public function validate()
     {
-        return array();
+        $errors = array();
+
+        // check if we have the data
+        if(count($this->model->getStatements()) === 0) {
+            throw new WebApplicationException("Form data is missing", Response::SC_BAD_REQUEST);
+        }
+
+        return $errors;
     }
 }

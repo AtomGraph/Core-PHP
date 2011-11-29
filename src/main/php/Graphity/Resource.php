@@ -70,6 +70,8 @@ class Resource implements ResourceInterface
         $this->response = new Response();
         $this->response->setStatus(Response::SC_OK);
         $this->response->setCharacterEncoding("UTF-8");
+
+        if ($this->request->getContentType() === Request::MULTIPART_TYPE) $this->request = new MultipartRequest();
     }
 
     /**
@@ -136,7 +138,7 @@ class Resource implements ResourceInterface
      * 
      * @param Response $response
      */
-    private function setResponse(Response $response)
+    protected function setResponse(Response $response)
     {
         $this->response = $response;
     }

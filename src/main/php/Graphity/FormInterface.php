@@ -25,7 +25,7 @@ namespace Graphity;
 /**
  *  Abstract class for sub-classing. Used to represent data submitted from a HTML form and access the Request parameters in a convenient way.
  */
-abstract class Form extends Request
+interface FormInterface
 {
 
     /**
@@ -33,16 +33,7 @@ abstract class Form extends Request
      * @return array An array of Errors
      */
 
-    public abstract function validate();
-
-    /**
-     * Return true if this form is multipart.
-     *
-     * @return boolean
-     */
-    public function isMultipart() {
-        return false;
-    }
+    function validate();
 
 }
 
