@@ -30,7 +30,7 @@ namespace Graphity;
  */
 class MultipartRequest implements RequestInterface
 {
-    const DEFAULT_MAX_POST_SIZE = 1024 * 1024; // 1 Meg
+    const DEFAULT_MAX_POST_SIZE = 1048576; // 1 Meg
 
     private $request = null;
     private $saveDir = null;
@@ -54,7 +54,7 @@ class MultipartRequest implements RequestInterface
             throw new Exception("maxPostSize must be positive");
         $this->request = $request;
 
-        $parser = new MultipartParser($request, $maxSize, true, true $encoding);
+        $parser = new MultipartParser($request, $maxSize, true, true, $encoding);
 
 //var_dump($request->getQueryString());
 
@@ -78,7 +78,6 @@ class MultipartRequest implements RequestInterface
                     }
                     else
                         $this->files[$part->getName()] = new UploadedFile(null, null, null, null);
-                }
             }
     }
 
@@ -88,7 +87,7 @@ class MultipartRequest implements RequestInterface
      * @return string Content type
      */
     
-    public function getContentType($fileParam)
+    public function getFileContentType($name)
     {
         try
         {
