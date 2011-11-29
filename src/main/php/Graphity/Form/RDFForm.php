@@ -25,6 +25,9 @@ namespace Graphity\Form;
 use Graphity;
 use Graphity\Request;
 use Graphity\Response;
+use Graphity\RequestInterface;
+use Graphity\MultipartRequest;
+use Graphity\MultipartParser;
 use Graphity\FormInterface;
 use Graphity\Rdf\Model;
 use Graphity\Rdf\Literal;
@@ -35,9 +38,8 @@ use Graphity\WebApplicationException;
 /**
  *  Implementation of http://www.lsrn.org/semweb/rdfpost.html
  */
-class RDFForm extends Request implements FormInterface
+class RDFForm implements RequestInterface, FormInterface // TO-DO: extends MultipartRequest?
 {
-
     /**
      * @var Model
      */
@@ -47,8 +49,15 @@ class RDFForm extends Request implements FormInterface
 
     private $values = array();
 
-    public function __construct()
+    private $request = null;
+
+    protected $parameters = array();
+
+    private $multipart = false;
+
+    public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->model = new Model();
         $this->initParamMap();
         $this->initModel();
@@ -56,26 +65,45 @@ class RDFForm extends Request implements FormInterface
 
     private function initParamMap()
     {
-        if ($this->isMultipart())
+        if (strpos($this->request->getContentType(), MultipartRequest::CONTENT_TYPE) === 0) // $this->request instanceof MultipartRequest
         {
-            $parser = new MultipartParser($this->getRequest(), MultipartRequest::DEFAULT_MAX_POST_SIZE);
+            $this->multipart = true;
+            $parser = new MultipartParser($this->request, MultipartRequest::DEFAULT_MAX_POST_SIZE);
 
             while (($part = $parser->readNextPart()) != null)
                 if ($part->getName() != null)
                 {
                     $this->addKey($part->getName());
-                    if ($part->isParam()) $this->addValue($part->getValue());
+                    if ($part->isParam())
+                    {
+                        $this->addValue($part->getValue());
+                        
+                        // then do the same as MultipartRequest does - in order to allow access via getParameter()
+                        $existingValues = array();
+                        if (isset($this->parameters[$part->getName()])) $existingValues = $this->parameters[$part->getName()];
+                        else $this->parameters[$part->getName()] = $existingValues;
+                        $existingValues[] = $part->getValue();
+                        $this->parameters[$part->getName()] = $existingValues;
+                    }
                     if ($part->isFile())
                     {
                         $this->addValue($part->getTmpName());
-                        $part->writeTo(sys_get_temp_dir());
+
+                        // then do the same as MultipartRequest does - however file info is not accessible from this class
+                        if ($part->getFileName() != null)
+                        {
+                            //$this->files[$part->getName()] = new UploadedFile(sys_get_temp_dir(), $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
+                            $part->writeTo(sys_get_temp_dir()); // save the file
+                        }
+                        //else
+                        //    $this->files[$part->getName()] = new UploadedFile(null, null, null, null);
                     }
                 }
         }
         else
         {
-            $postBody = stream_get_contents($this->getInputStream());
-            fclose($this->getInputStream());
+            $postBody = stream_get_contents($this->request->getInputStream());
+            fclose($this->request->getInputStream());
             
             $params = explode("&", $postBody);
             
@@ -181,4 +209,113 @@ class RDFForm extends Request implements FormInterface
 
         return $errors;
     }
+
+    /**
+     * Return true if this form is multipart.
+     *
+     * @return boolean
+     */
+    public function isMultipart() {
+        return $this->multipart;
+    }
+
+    public function getParameter($name)
+    {
+        try
+        {
+            $values = null;
+            if (isset($this->parameters[$name]))
+                $values = $this->parameters[$name];
+            if ($values == null || count($values) == 0)
+                return null;
+
+            $value = $values[count($values) - 1];
+            return $value;
+        }
+        catch (\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    public function getAttribute($name)
+    {
+        return $this->request->getAttribute($name);
+    }
+
+    public function setAttribute($name, $value)
+    {
+        $this->request->setAttribute($name, $value);
+    }
+
+    public function getContentType()
+    {
+        return $this->request->getContentType();
+    }
+
+    public function getContentLength()
+    {
+        return $this->request->getContentLength();
+    }
+
+    public function getCookies()
+    {
+        return $this->request->getCookies();
+    }
+
+    public function getMethod()
+    {
+        return $this->request->getMethod();
+    }
+
+    public function getHeader($name)
+    {
+        return $this->request->getHeader($name);
+    }
+
+    public function getSession()
+    {
+        return $this->request->getSession();
+    }
+
+    public function getParameterMap()
+    {
+        return $this->request->getParameterMap();
+    }
+
+    public function getPathInfo()
+    {
+        return $this->request->getPathInfo();
+    }
+
+    public function getRequestURI()
+    {
+        return $this->request->getRequestURI();
+    }
+
+    public function getServerName()
+    {
+        return $this->request->getServerName();
+    }
+
+    public function getServerPort()
+    {
+        return $this->request->getServerPort();
+    }
+
+    public function getScheme()
+    {
+        return $this->request->getScheme();
+    }
+
+    public function getQueryString()
+    {
+        return $this->request->getQueryString();
+    }
+
+	public function getInputStream()
+    {
+        return $this->request->getInputStream();
+    }
+
 }

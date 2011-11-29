@@ -29,13 +29,6 @@ namespace Graphity;
  */
 class Request implements RequestInterface
 {
-    /**
-     *  @see vhost.conf
-     *
-     *  This is required for multipart/form-data request parsing.
-     */
-    const MULTIPART_TYPE = "multipart/form-data-alternate"; // comes from vhost.conf
-
     private $attributes = array();
 
     private $session = null;
@@ -232,15 +225,6 @@ class Request implements RequestInterface
 	{
 		return fopen("php://input", "r");
 	}
-
-    /**
-     * Return true if this form is multipart.
-     *
-     * @return boolean
-     */
-    public function isMultipart() {
-        return false;
-    }
 
 }
 

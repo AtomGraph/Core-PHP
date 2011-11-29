@@ -30,6 +30,13 @@ namespace Graphity;
  */
 class MultipartRequest implements RequestInterface
 {
+    /**
+     *  @see vhost.conf
+     *
+     *  This is required for multipart/form-data request parsing.
+     */
+    const CONTENT_TYPE = "multipart/form-data-alternate"; // comes from vhost.conf
+
     const DEFAULT_MAX_POST_SIZE = 1048576; // 1 Meg
 
     private $request = null;
@@ -63,7 +70,6 @@ class MultipartRequest implements RequestInterface
         while (($part = $parser->readNextPart()) != null)
             if ($part->getName() != null)
             {
-                //$this->addKey($part->getName());
                 if ($part->isParam())
                 {
                     $existingValues = array();
@@ -76,7 +82,7 @@ class MultipartRequest implements RequestInterface
                     if ($part->getFileName() != null)
                     {
                         $this->files[$part->getName()] = new UploadedFile($saveDir, $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
-                        $part->writeTo($saveDir);
+                        $part->writeTo($saveDir);  // save the file
                     }
                     else
                         $this->files[$part->getName()] = new UploadedFile(null, null, null, null);
@@ -140,6 +146,25 @@ class MultipartRequest implements RequestInterface
         }
     }
 
+    public function getParameter($name)
+    {
+        try
+        {
+            $values = null;
+            if (isset($this->parameters[$name]))
+                $values = $this->parameters[$name];
+            if ($values == null || count($values) == 0)
+                return null;
+
+            $value = $values[count($values) - 1];
+            return $value;
+        }
+        catch (\Exception $e)
+        {
+            return null;
+        }
+    }
+
     public function getAttribute($name)
     {
         return $this->request->getAttribute($name);
@@ -163,11 +188,6 @@ class MultipartRequest implements RequestInterface
     public function getCookies()
     {
         return $this->request->getCookies();
-    }
-
-    public function getParameter($name)
-    {
-        return $this->request->getParameter($name);
     }
 
     public function getMethod()
@@ -224,7 +244,6 @@ class MultipartRequest implements RequestInterface
     {
         return $this->request->getInputStream();
     }
-
 
 }
 
