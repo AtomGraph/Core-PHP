@@ -75,7 +75,7 @@ class MultipartRequest implements RequestInterface
                 if ($part->isFile())
                     if ($part->getFileName() != null)
                     {
-                        $this->files[$part->getName()] = new UploadedFile($dir, $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
+                        $this->files[$part->getName()] = new UploadedFile($saveDir, $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
                         $part->writeTo($saveDir);
                     }
                     else
