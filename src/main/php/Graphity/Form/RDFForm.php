@@ -24,11 +24,13 @@ namespace Graphity\Form;
 
 use Graphity;
 use Graphity\Request;
+use Graphity\Response;
 use Graphity\FormInterface;
 use Graphity\Rdf\Model;
 use Graphity\Rdf\Literal;
 use Graphity\Rdf\Statement;
 use Graphity\Rdf\Resource;
+use Graphity\WebApplicationException;
 
 /**
  *  Implementation of http://www.lsrn.org/semweb/rdfpost.html
@@ -55,6 +57,9 @@ class RDFForm extends Request implements FormInterface
     private function initParamMap()
     {
         if ($this->isMultipart())
+        {
+            $parser = new MultipartParser($this->getRequest(), MultipartRequest::DEFAULT_MAX_POST_SIZE);
+
             while (($part = $parser->readNextPart()) != null)
                 if ($part->getName() != null)
                 {
@@ -63,9 +68,10 @@ class RDFForm extends Request implements FormInterface
                     if ($part->isFile())
                     {
                         $this->addValue($part->getTmpName());
-                        $part->writeTo($this->dir); // TO-DO: writing files doesn't really belong here
+                        $part->writeTo(sys_get_temp_dir());
                     }
                 }
+        }
         else
         {
             $postBody = stream_get_contents($this->getInputStream());
