@@ -25,11 +25,18 @@ namespace Graphity;
 /**
  * A utility class to handle multipart/form-data requests, the kind of requests that support file uploads.
  * Wraps PHP's functions and global arrays to emulate Java's MultipartRequest class.
+ * http://www.servlets.com/cos/javadoc/com/oreilly/servlet/MultipartRequest.html
+ * http://www.java2s.com/Open-Source/Java-Document/Groupware/hipergate/com/oreilly/servlet/MultipartRequest.java.htm
  */
-class MultipartRequest
+class MultipartRequest implements RequestInterface
 {
+    const DEFAULT_MAX_POST_SIZE = 1024 * 1024; // 1 Meg
 
+    private $request = null;
     private $saveDir = null;
+    private $parser = null;
+    protected $parameters = array();
+    protected $files = array();
 
     /**
      * Constructs MultipartRequest from a simple Request.
@@ -37,9 +44,42 @@ class MultipartRequest
      * @param string $saveDir Directory to save files to
      */
     
-    public function __construct(Request $request, $saveDir)
+    public function __construct(Request $request, $saveDir, $maxSize = DEFAULT_MAX_POST_SIZE, $encoding = null)
     {
-        $this->saveDir = $saveDir;
+        if ($request == null)
+            throw new Exception("$request cannot be null");
+        if ($saveDir == null)
+            throw new Exception("saveDirectory cannot be null");
+        if ($maxSize <= 0)
+            throw new Exception("maxPostSize must be positive");
+        $this->request = $request;
+
+        $parser = new MultipartParser($request, $maxSize, true, true $encoding);
+
+//var_dump($request->getQueryString());
+
+        while (($part = $parser->readNextPart()) != null)
+            if ($part->getName() != null)
+            {
+                //$this->addKey($part->getName());
+                if ($part->isParam())
+                {
+                    $existingValues = array();
+                    if (isset($this->parameters[$part->getName()])) $existingValues = $this->parameters[$part->getName()];
+                    else $this->parameters[$part->getName()] = $existingValues;
+                    $existingValues[] = $part->getValue();
+                    $this->parameters[$part->getName()] = $existingValues;
+                }
+                if ($part->isFile())
+                    if ($part->getFileName() != null)
+                    {
+                        $this->files[$part->getName()] = new UploadedFile($dir, $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
+                        $part->writeTo($saveDir);
+                    }
+                    else
+                        $this->files[$part->getName()] = new UploadedFile(null, null, null, null);
+                }
+            }
     }
 
     /**
@@ -50,10 +90,15 @@ class MultipartRequest
     
     public function getContentType($fileParam)
     {
-        if(isset($_FILES[$fileParam]) && $_FILES[$fileParam]["error"] != UPLOAD_ERR_NO_FILE)
-            return $_FILES[$fileParam]["type"];
-        else
+        try
+        {
+            $file = $this->files[$name];
+            return $file->getContentType();
+        }
+        catch (\Exception $e)
+        {
             return null;
+        }
     }
 
     /**
@@ -62,12 +107,17 @@ class MultipartRequest
      * @return string Filesystem name
      */
     
-    public function getFilesystemName($fileParam)
+    public function getFilesystemName($name)
     {
-        if(isset($_FILES[$fileParam]) && $_FILES[$fileParam]["error"] != UPLOAD_ERR_NO_FILE)
-            return $_FILES[$fileParam]["tmp_name"];
-        else
+        try
+        {
+            $file = $this->files[$name];
+            return $file->getFilesystemName();
+        }
+        catch (\Exception $e)
+        {
             return null;
+        }
     }
 
     /**
@@ -76,12 +126,17 @@ class MultipartRequest
      * @return string Original name
      */
     
-    public function getOriginalFileName($fileParam)
+    public function getOriginalFileName($name)
     {
-        if(isset($_FILES[$fileParam]) && $_FILES[$fileParam]["error"] != UPLOAD_ERR_NO_FILE)
-            return $_FILES[$fileParam]["name"];
-        else
+        try
+        {
+            $file = $this->files[$name];
+            return $file->getOriginalFilename();
+        }
+        catch (\Exception $e)
+        {
             return null;
+        }
     }
 }
 
