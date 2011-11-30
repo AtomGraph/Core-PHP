@@ -54,7 +54,7 @@ class MultipartRequest implements RequestInterface
     public function __construct(Request $request, $saveDir, $maxSize = null, $encoding = null)
     {
         if ($request == null)
-            throw new Exception("$request cannot be null");
+            throw new Exception("Request cannot be null");
         if ($saveDir == null)
             throw new Exception("saveDirectory cannot be null");
         if ($maxSize === null)
@@ -64,8 +64,6 @@ class MultipartRequest implements RequestInterface
         $this->request = $request;
 
         $parser = new MultipartParser($request, $maxSize, true, true, $encoding);
-
-//var_dump($request->getQueryString());
 
         while (($part = $parser->readNextPart()) != null)
             if ($part->getName() != null)
@@ -246,5 +244,3 @@ class MultipartRequest implements RequestInterface
     }
 
 }
-
-?>

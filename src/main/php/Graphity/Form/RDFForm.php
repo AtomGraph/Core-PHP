@@ -55,7 +55,7 @@ class RDFForm implements RequestInterface, FormInterface // TO-DO: extends Multi
 
     private $multipart = false;
 
-    public function __construct(Request $request)
+    public function __construct(RequestInterface $request)
     {
         $this->request = $request;
         $this->model = new Model();

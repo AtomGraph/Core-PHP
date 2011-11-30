@@ -40,15 +40,19 @@ class RDFFormTest extends \PHPUnit_Framework_TestCase
     public function test_getStatements()
     {
         $stream = fopen('data://text/plain,' . self::$POST_BODY, "r");
+
+        $request = $this->getMockBuilder('Graphity\\Request')
+                        ->disableOriginalConstructor()
+                        ->setMethods(array('getInputStream'))
+                        ->getMock();
+        $request->expects($this->any())
+                ->method('getInputStream')
+                ->will($this->returnValue($stream));
         
-        $form = $this->getMockBuilder('Graphity\\Form\\RDFForm')
-                     ->disableOriginalConstructor()
-                     ->setMethods(array('getInputStream'))
-                     ->getMock();
+        $form = $this->getMock('Graphity\\Form\\RDFForm', array('validate'), array($request));
         $form->expects($this->any())
-             ->method('getInputStream')
-             ->will($this->returnValue($stream));
-        $form->__construct();
+             ->method('validate')
+             ->will($this->returnValue(true));
         
         $model = $form->getModel();
         $this->assertEquals(count(self::$STMTS), count($model->getStatements()));
