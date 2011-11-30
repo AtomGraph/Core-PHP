@@ -27,6 +27,7 @@ use Graphity\Request;
 use Graphity\Response;
 use Graphity\RequestInterface;
 use Graphity\MultipartRequest;
+use Graphity\UploadedFile;
 use Graphity\MultipartParser;
 use Graphity\FormInterface;
 use Graphity\Rdf\Model;
@@ -52,6 +53,8 @@ class RDFForm implements RequestInterface, FormInterface // TO-DO: extends Multi
     private $request = null;
 
     protected $parameters = array();
+
+    protected $files = array();
 
     private $multipart = false;
 
@@ -89,14 +92,14 @@ class RDFForm implements RequestInterface, FormInterface // TO-DO: extends Multi
                     {
                         $this->addValue($part->getTmpName());
 
-                        // then do the same as MultipartRequest does - however file info is not accessible from this class
+                        // then do the same as MultipartRequest does - in order to access files
                         if ($part->getFileName() != null)
                         {
-                            //$this->files[$part->getName()] = new UploadedFile(sys_get_temp_dir(), $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
+                            $this->files[$part->getName()] = new UploadedFile(sys_get_temp_dir(), $part->getFileName(), $part->getFileName(), $part->getContentType()); // what about the original filename?
                             $part->writeTo(sys_get_temp_dir()); // save the file
                         }
-                        //else
-                        //    $this->files[$part->getName()] = new UploadedFile(null, null, null, null);
+                        else
+                            $this->files[$part->getName()] = new UploadedFile(null, null, null, null);
                     }
                 }
         }
@@ -224,6 +227,72 @@ class RDFForm implements RequestInterface, FormInterface // TO-DO: extends Multi
      */
     public function isMultipart() {
         return $this->multipart;
+    }
+
+    /**
+     * Returns the content type of an uploaded file, or null if the file was not included in the upload.
+     * @param string $fileParam The name of the file input in HTML
+     * @return string Content type
+     */
+    
+    public function getFileContentType($name)
+    {
+        try
+        {
+            $file = $this->files[$name];
+            return $file->getContentType();
+        }
+        catch (\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the filesystem name of an uploaded file, or null if the file was not included in the upload.
+     * @param string $fileParam The name of the file input in HTML
+     * @return string Filesystem name
+     */
+    
+    public function getFilesystemName($name)
+    {
+        try
+        {
+            $file = $this->files[$name];
+            return $file->getFilesystemName();
+        }
+        catch (\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the original name of an uploaded file (as supplied by the client browser), or null if the file was not included in the upload.
+     * @param string $fileParam The name of the file input in HTML
+     * @return string Original name
+     */
+    
+    public function getOriginalFileName($name)
+    {
+        try
+        {
+            $file = $this->files[$name];
+            return $file->getOriginalFilename();
+        }
+        catch (\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    public function getFile($name) {
+        try {
+            $file = $this->files[$name];
+            return $file->getFile(); // may be null
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function getParameter($name)

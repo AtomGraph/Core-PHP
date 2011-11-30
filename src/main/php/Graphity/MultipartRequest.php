@@ -144,6 +144,15 @@ class MultipartRequest implements RequestInterface
         }
     }
 
+    public function getFile($name) {
+        try {
+            $file = $this->files[$name];
+            return $file->getFile(); // may be null
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
     public function getParameter($name)
     {
         try
