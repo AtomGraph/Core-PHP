@@ -229,63 +229,6 @@ class RDFForm implements RequestInterface, FormInterface // TO-DO: extends Multi
         return $this->multipart;
     }
 
-    /**
-     * Returns the content type of an uploaded file, or null if the file was not included in the upload.
-     * @param string $fileParam The name of the file input in HTML
-     * @return string Content type
-     */
-    
-    public function getFileContentType($name)
-    {
-        try
-        {
-            $file = $this->files[$name];
-            return $file->getContentType();
-        }
-        catch (\Exception $e)
-        {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the filesystem name of an uploaded file, or null if the file was not included in the upload.
-     * @param string $fileParam The name of the file input in HTML
-     * @return string Filesystem name
-     */
-    
-    public function getFilesystemName($name)
-    {
-        try
-        {
-            $file = $this->files[$name];
-            return $file->getFilesystemName();
-        }
-        catch (\Exception $e)
-        {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the original name of an uploaded file (as supplied by the client browser), or null if the file was not included in the upload.
-     * @param string $fileParam The name of the file input in HTML
-     * @return string Original name
-     */
-    
-    public function getOriginalFileName($name)
-    {
-        try
-        {
-            $file = $this->files[$name];
-            return $file->getOriginalFilename();
-        }
-        catch (\Exception $e)
-        {
-            return null;
-        }
-    }
-
     public function getFile($name) {
         try {
             $file = $this->files[$name];

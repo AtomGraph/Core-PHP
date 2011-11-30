@@ -188,6 +188,10 @@ class Resource implements ResourceInterface
         }
 
         $methodName = $this->getRouter()->matchMethod($this);
+        $response = $this->$methodName();
+        if($response === null) {
+            new WebApplicationException("Undefined response instance", Response::SC_INTERNAL_SERVER_ERROR);
+        }
         $this->setResponse($this->$methodName());
 
         $this->getResponse()->commit(); // write status and headers
