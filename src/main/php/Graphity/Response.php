@@ -53,6 +53,8 @@ class Response implements ResponseInterface
     public function __construct()
     {
         $this->writer = fopen("php://output", "w");
+
+        $this->setHeader("X-Powered-By", "Graphity http://graphity.org");
     }
 
     /**
