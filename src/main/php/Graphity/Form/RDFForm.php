@@ -112,6 +112,13 @@ class RDFForm implements RequestInterface, FormInterface // TO-DO: extends Multi
                 if(count($pair) > 1) {
                     $this->addKey(urldecode($pair[0]));
                     $this->addValue(urldecode($pair[1]));
+
+                    // then do the same as MultipartRequest does - in order to allow access via getParameter()
+                    $existingValues = array();
+                    if (isset($this->parameters[$pair[0]])) $existingValues = $this->parameters[$pair[0]];
+                    else $this->parameters[$pair[0]] = $existingValues;
+                    $existingValues[] = $pair[1];
+                    $this->parameters[$pair[0]] = $existingValues;
                 }
             }
         }
