@@ -38,68 +38,67 @@ use Graphity\Exception;
 
 class DOM2Model
 {
-    private $base = null;
-    private $model = null;
-    
-    protected function __construct($base, Model &$model)
-    {
-        $this->base = $base;
-        $this->model = $model;
-    }
-
-    public static function createD2M($base, Model &$model)
-    {
-        return new self($base, $model);
-    }
-
     // TO-DO: make it work with default namespace + base URI
     // TO-DO: make it work recursively with hierarchical RDF/XML
-    public function load(\DOMDocument $doc)
+    public static function transform(\DOMDocument $doc, $base)
     {
         if ($doc == null || $doc->documentElement->namespaceURI != Rdf::NS || $doc->documentElement->localName != "RDF")
             throw new Exception("Not a RDF/XML document");
 
-        if ($doc->documentElement != null && $doc->documentElement->hasChildNodes())
-            foreach ($doc->documentElement->childNodes as $subjectElem)
-            {
-                if ($subjectElem->nodeType == XML_ELEMENT_NODE) // && $subjectElem->namespaceURI != null && $subjectElem->namespaceURI == Rdf::NS)
-                {
+        $model = new Model;
+
+        if ($doc->documentElement != null && $doc->documentElement->hasChildNodes()) {
+            foreach ($doc->documentElement->childNodes as $subjectElem) {
+                if ($subjectElem->nodeType == XML_ELEMENT_NODE /* && $subjectElem->namespaceURI != null && $subjectElem->namespaceURI == Rdf::NS*/) {
                     // subject
                     $subject = $subjectId = null;
-                    if ($subjectElem->getAttributeNS(Rdf::NS, "nodeID") != null)
+                    if ($subjectElem->getAttributeNS(Rdf::NS, "nodeID") != null) {
                         $subjectId = "_:" . $subjectElem->getAttributeNS(Rdf::NS, "nodeID");
+                    }
                     //$subjectId = $subjectElem->getAttributeNS(Rdf::NS, "ID");
-                    if ($subjectElem->getAttributeNS(Rdf::NS, "about") != null)
+                    if ($subjectElem->getAttributeNS(Rdf::NS, "about") != null) {
                         $subjectId = $subjectElem->getAttributeNS(Rdf::NS, "about");
+                    }
                     $subject = new Resource($subjectId);
 
-                    foreach ($subjectElem->childNodes as $propertyElem)
-                        if ($propertyElem->nodeType == XML_ELEMENT_NODE)
-                        {
+                    foreach ($subjectElem->childNodes as $propertyElem) {
+                        if ($propertyElem->nodeType == XML_ELEMENT_NODE) {
                             // property
                             $property = $propertyUri = null;
-                            if ($propertyElem->namespaceURI != null && $propertyElem->localName != null)
+                            if ($propertyElem->namespaceURI != null && $propertyElem->localName != null) {
                                 $propertyUri = $propertyElem->namespaceURI . $propertyElem->localName;
-                            if ($propertyUri != null) $property = new Property($propertyUri);
-                            else throw new Exception("Could not resolve property URI");
+                            }
+                            if ($propertyUri != null) {
+                                $property = new Property($propertyUri);
+                            }
+                            else {
+                                throw new Exception("Could not resolve property URI");
+                            }
                            
                             // object
                             $object = $objectId = null;
-                            if ($propertyElem->getAttributeNS(Rdf::NS, "nodeID") != null)
+                            if ($propertyElem->getAttributeNS(Rdf::NS, "nodeID") != null) {
                                 $objectId = "_:" . $propertyElem->getAttributeNS(Rdf::NS, "nodeID");
-                            if ($propertyElem->getAttributeNS(Rdf::NS, "resource") != null)
+                            }
+                            if ($propertyElem->getAttributeNS(Rdf::NS, "resource") != null) {
                                 $objectId = $propertyElem->getAttributeNS(Rdf::NS, "resource");
-                            if (strlen($propertyElem->nodeValue) == 0)
+                            }
+                            if (strlen($propertyElem->nodeValue) == 0) {
                                 $object = new Resource($objectId);      
+                            }
                             else 
                             {
                                 $object = new Literal($propertyElem->nodeValue, $propertyElem->getAttributeNS(Rdf::NS, "datatype"), $propertyElem->getAttributeNS("http://www.w3.org/XML/1998/namespace", "lang"));
                             }
 
                             // add rdf:type if $subjectElem is not rdf:Description
-                            $this->model->addStatement(new Statement($subject, $property, $object));
+                            $model->addStatement(new Statement($subject, $property, $object));
                         }
+                    }
                 }
             }
+        }
+
+        return $model;
     }
 }
