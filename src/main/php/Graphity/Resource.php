@@ -192,7 +192,7 @@ class Resource implements ResourceInterface
         if($response === null) {
             new WebApplicationException("Undefined response instance", Response::SC_INTERNAL_SERVER_ERROR);
         }
-        $this->setResponse($this->$methodName());
+        $this->setResponse($response);
 
         $this->getResponse()->commit(); // write status and headers
         $this->getResponse()->flushBuffer();
