@@ -50,6 +50,15 @@ class RouteAnnotationListener implements ScannerListener
             // Only filenames with "Resource" will be accepted.
             return false;
         }
+
+        $className = basename($path, ".php");
+        $namespace = str_ireplace("src/main/php", "", dirname($path));
+        $fqName = str_ireplace("/", "\\", ltrim($namespace, "/")) . "\\" . $className;
+
+        $reflection = new \ReflectionClass($fqName);
+        if($reflection->isSubclassOf('Graphity\\Resource') === false) {
+            return false;
+        }
         
         return true;
     }
