@@ -218,6 +218,7 @@ class Resource implements ResourceInterface
         $queryString = file_get_contents($fileName);
 
         // TO-DO! Repository classes still not in Graphity
+        // TO-DO! Should return DOMDocument, not a string
         return $this->getRepository()->ask(Sparql\Query::newInstance()
             ->setQuery($queryString)
             ->setVariable('uri', new Rdf\Resource($this->getURI())));
