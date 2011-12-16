@@ -21,6 +21,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 exclude-result-prefixes="xsl rdf">
 
     <!-- groups triples in RDF/XML by subject to ease further XSLT processing -->
+	<xsl:output indent="yes" method="xml" encoding="UTF-8" media-type="application/rdf+xml"/>
 
     <!-- only match subjects (i.e. elements that have property children) -->
     <xsl:key name="resources" match="*[*][@rdf:about] | *[*][@rdf:nodeID]" use="@rdf:about | @rdf:nodeID"/>

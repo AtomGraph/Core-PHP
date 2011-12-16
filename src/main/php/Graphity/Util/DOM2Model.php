@@ -88,7 +88,11 @@ class DOM2Model
                             }
                             else 
                             {
-                                $object = new Literal($propertyElem->nodeValue, $propertyElem->getAttributeNS(Rdf::NS, "datatype"), $propertyElem->getAttributeNS("http://www.w3.org/XML/1998/namespace", "lang"));
+                                $object = new Literal($propertyElem->nodeValue);
+                                if ($propertyElem->getAttributeNS(Rdf::NS, "datatype") != null)
+                                    $object->setDatatype($propertyElem->getAttributeNS(Rdf::NS, "datatype"));
+                                if ($propertyElem->getAttributeNS("http://www.w3.org/XML/1998/namespace", "lang") != null)
+                                    $object->setLanguage($propertyElem->getAttributeNS("http://www.w3.org/XML/1998/namespace", "lang"));
                             }
 
                             // add rdf:type if $subjectElem is not rdf:Description
