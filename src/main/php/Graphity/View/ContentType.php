@@ -27,6 +27,8 @@ namespace Graphity\View;
  */
 class ContentType
 {
+    const TEXT_PLAIN = "text/plain";
+
     const XHTML_XML = "application/xhtml+xml";
 
     const TEXT_HTML = "text/html";
