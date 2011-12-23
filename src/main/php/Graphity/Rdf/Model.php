@@ -151,12 +151,16 @@ class Model implements \Iterator, \ArrayAccess
      *
      * @return array
      */
-    public function listResourcesWithProperty(Resource $p, Node $o) {
+    public function listResourcesWithProperty(Resource $p, Node $o = null) {
         $list = array();
+
         foreach($this->listOfStatements as $stmt) {
-            if((string)$stmt->getPredicate() === (string)$p &&
-                (string)$stmt->getObject() === (string)$o) {
-                $list[] = $stmt;
+            if((string)$stmt->getPredicate() === (string)$p) {
+                if($o === null) {
+                    $list[] = $stmt;
+                } elseif((string)$stmt->getObject() === (string)$o) {
+                    $list[] = $stmt;
+                }
             }
         }
 

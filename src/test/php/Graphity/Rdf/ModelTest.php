@@ -142,7 +142,19 @@ _:b2 <http://rdf.org/#rest> <http://rdf.org/#nil> .
         $this->assertFalse($model->containsResource(new GR\Resource("http://random.org/url")));
     }
 
-    public function test_listResourcesWithProperty() {
+    public function test_listResourcesWithProperty_noObject() {
+        $model = new GR\Model();
+
+        $this->assertTrue(count($model->getStatements()) === 0);
+
+        $model->addArray(self::$ARRAY);
+
+        $array = $model->listResourcesWithProperty(new GR\Resource("http://rdf.org/#first"));
+
+        $this->assertTrue(count($array) === 2);
+    }
+
+    public function test_listResourcesWithProperty_andObject() {
         $model = new GR\Model();
 
         $this->assertTrue(count($model->getStatements()) === 0);
