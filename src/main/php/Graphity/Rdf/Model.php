@@ -133,8 +133,8 @@ class Model implements \Iterator, \ArrayAccess
      */
     public function getProperty(Resource $s, Resource $p) {
         foreach($this->listOfStatements as $stmt) {
-            if($stmt->getSubject()->getURI() === $s->getURI() &&
-                $stmt->getPredicate()->getURI() === $p->getURI()) {
+            if((string)$stmt->getSubject() === (string)$s &&
+                (string)$stmt->getPredicate() === (string)$p) {
                 return $stmt;
             }
         }

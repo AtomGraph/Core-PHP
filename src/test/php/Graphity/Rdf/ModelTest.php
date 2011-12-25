@@ -142,6 +142,21 @@ _:b2 <http://rdf.org/#rest> <http://rdf.org/#nil> .
         $this->assertFalse($model->containsResource(new GR\Resource("http://random.org/url")));
     }
 
+    public function test_getProperty() {
+        $model = new GR\Model();
+
+        $this->assertTrue(count($model->getStatements()) === 0);
+
+        $model->addArray(self::$ARRAY);
+
+        $property = new GR\Resource("http://rdf.org/#first");
+        $r1 = $model->getProperty(new GR\Resource("_:b1"), $property);
+        $this->assertEquals($r1->getSubject()->getAnonymousId(), "b1");
+
+        $r2 = $model->getProperty(new GR\Resource("_:b2"), $property);
+        $this->assertEquals($r2->getSubject()->getAnonymousId(), "b2");
+    }
+
     public function test_listResourcesWithProperty_noObject() {
         $model = new GR\Model();
 
