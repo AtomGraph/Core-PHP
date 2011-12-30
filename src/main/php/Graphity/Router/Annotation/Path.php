@@ -118,4 +118,46 @@ class Path extends \Annotation
         
         return $count;
     }
+
+    /**
+     * Returns weight of the path.
+     *
+     * The more specific path, the more "weight" it gets.
+     *
+     * @return integer
+     */
+    public function getWeight()
+    {
+        // NOTE: these are handcrafted, so might not work in all cases,
+        // if you have an idea for improvement - please share.
+
+        // number of segments has the most weight
+        $weight = $this->getSegmentCount() * 4;
+        // number of static segments (segments that are not parameters) has a little bit less weight
+        $weight += ($this->getSegmentCount() - $this->getParameterCount()) * 2;
+        /* the more specific regexp, the more weight:
+            e.g.: \w or \d is more specific than \w+ or \d+
+            and \w+ and \d+ are more specific than \w* ir \d*
+            and \w* and \d* are more specific than .*
+        */
+        $listOfSegments = array_slice(explode("/", rtrim($this->value, "/")), 1, null, false);
+        foreach($listOfSegments as $idx => $segment) {
+            if($segment[0] === "{") {
+                if(($pos = strpos($segment, ":")) !== false) {
+                    $regex = trim(substr($segment, $pos + 1, -1));
+                    if(strpos($segment, ".*") !== false) {
+                        continue;
+                    } elseif(strpos($segment, "\w*") !== false || strpos($segment, "\d*") !== false) {
+                        $weight += 1;
+                    } elseif(strpos($segment, "\w+") !== false || strpos($segment, "\d+") !== false) {
+                        $weight += 2;
+                    } elseif(strpos($segment, "\w") !== false || strpos($segment, "\d") !== false) {
+                        $weight += 3;
+                    }
+                }
+            }
+        }
+
+        return $weight;
+    }
 }

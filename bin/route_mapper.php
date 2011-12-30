@@ -58,8 +58,10 @@ $routesStr .= "return array(\n";
 $listOfAnnotations = $listener->getAnnotations();
 usort($listOfAnnotations, function($a, $b) {
     // count = segmentCount + (segmentCount - parameterCount)
-    $aCount = 2 * $a['path']->getSegmentCount() - $a['path']->getParameterCount();
-    $bCount = 2 * $b['path']->getSegmentCount() - $b['path']->getParameterCount();
+    //$aCount = 2 * $a['path']->getSegmentCount() - $a['path']->getParameterCount();
+    //$bCount = 2 * $b['path']->getSegmentCount() - $b['path']->getParameterCount();
+    $aCount = $a['path']->getWeight();
+    $bCount = $b['path']->getWeight();
     
     if($aCount > $bCount) {
         return -1;
@@ -70,7 +72,7 @@ usort($listOfAnnotations, function($a, $b) {
     return 0;
 });
 
-foreach($listOfAnnotations as $annotation) {
+foreach($listOfAnnotations as $idx => $annotation) {
     $className = $annotation['className'];
     $matchPath = $annotation['path']->getMatchPath();
     $route = array(
