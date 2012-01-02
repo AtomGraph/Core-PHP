@@ -57,7 +57,7 @@ class Path extends \Annotation
             $listOfSegments[$idx] = "{" . $name . "}";
         }
         
-        return '/' . implode("/", $listOfSegments);
+        return '/' . rtrim(implode("/", $listOfSegments), "/");
     }
 
     /**
@@ -87,77 +87,98 @@ class Path extends \Annotation
             $listOfSegments[$idx] = "(?<" . $name . ">" . str_replace("\\\\", "\\", $pattern) . ")";
         }
         
-        return '^\/' . implode("\/", $listOfSegments) . '$';
+        return '^\/' . rtrim(implode("\/", $listOfSegments), "/") . '(\\/.*)?';
     }
     
     /**
-     * Returns number of segments in URI
-     * 
+     * Return the number of literal characters.
+     *
+     * Literal characters means those not resulting from template variable substitution.
+     *
      * @return integer
      */
-    public function getSegmentCount()
+    public function getLiteralCharacterCount()
     {
-        $listOfSegments = array_slice(explode("/", rtrim($this->value, "/")), 1, null, false);
-        return count($listOfSegments);
-    }
-    
-    /**
-     * Returns number of parameters in URI
-     * 
-     * @return integer
-     */
-    public function getParameterCount()
-    {
+        $listOfSegments = explode("/", trim($this->getBuildPath(), "/"));
         $count = 0;
-        $listOfSegments = array_slice(explode("/", rtrim($this->value, "/")), 1, null, false);
-        foreach($listOfSegments as $idx => $segment) {
-            if($segment[0] === "{") {
-                $count++;
+
+        foreach($listOfSegments as $segment) {
+            if($segment[0] != "{") {
+                $count += strlen($segment);
             }
         }
-        
+
         return $count;
     }
 
     /**
-     * Returns weight of the path.
+     * Return the number of capturing groups (parameters).
      *
-     * The more specific path, the more "weight" it gets.
+     * @param boolean $includeDefault   Should the count include default capturing group (self::DEFAULT_PATTERN)?
      *
      * @return integer
      */
-    public function getWeight()
-    {
-        // NOTE: these are handcrafted, so might not work in all cases,
-        // if you have an idea for improvement - please share.
 
-        // number of segments has the most weight
-        $weight = $this->getSegmentCount() * 4;
-        // number of static segments (segments that are not parameters) has a little bit less weight
-        $weight += ($this->getSegmentCount() - $this->getParameterCount()) * 2;
-        /* the more specific regexp, the more weight:
-            e.g.: \w or \d is more specific than \w+ or \d+
-            and \w+ and \d+ are more specific than \w* ir \d*
-            and \w* and \d* are more specific than .*
-        */
+    public function getParameterCount($includeDefault = true) {
         $listOfSegments = array_slice(explode("/", rtrim($this->value, "/")), 1, null, false);
-        foreach($listOfSegments as $idx => $segment) {
-            if($segment[0] === "{") {
-                if(($pos = strpos($segment, ":")) !== false) {
-                    $regex = trim(substr($segment, $pos + 1, -1));
-                    if(strpos($segment, ".*") !== false) {
-                        continue;
-                    } elseif(strpos($segment, "\w*") !== false || strpos($segment, "\d*") !== false) {
-                        $weight += 1;
-                    } elseif(strpos($segment, "\w+") !== false || strpos($segment, "\d+") !== false) {
-                        $weight += 2;
-                    } elseif(strpos($segment, "\w") !== false || strpos($segment, "\d") !== false) {
-                        $weight += 3;
-                    }
+        $count = 0;
+
+        foreach($listOfSegments as $segment) {
+            if(strpos($segment, "{") !== 0) {
+                continue;
+            }
+            
+            if($includeDefault === false) {
+                if(strpos($segment, ":") !== false) {
+                    $count++;
                 }
+            } else {
+                $count++;
             }
         }
 
-        return $weight;
+        return $count;
+    }
+
+    /**
+     * Compare this Path pattern to another path pattern.
+     *
+     * According to JAX-RS (3.7.2 1.e):
+     *  1. Number of literal characters, descending.
+     *  2. Number of capturing groups, descending.
+     *  3. Number of capturing groups with non-default regexes, descending.
+     *
+     * @param Path $other   Path to compare to.
+     *
+     * @return integer
+     */
+    public function compare(Path $other) {
+        $thisCount = $this->getLiteralCharacterCount();
+        $otherCount = $other->getLiteralCharacterCount();
+
+        if($thisCount > $otherCount) {
+            return -1;
+        } elseif($thisCount < $otherCount) {
+            return 1;
+        } else {
+            $thisCount = $this->getParameterCount();
+            $otherCount = $other->getParameterCount();
+            if($thisCount > $otherCount) {
+                return -1;
+            } elseif($thisCount < $otherCount) {
+                return 1;
+            } else {
+                $thisCount = $this->getParameterCount(false);
+                $otherCount = $other->getParameterCount(false);
+                if($thisCount > $otherCount) {
+                    return -1;
+                } elseif($thisCount < $otherCount) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        }
     }
 }
+
