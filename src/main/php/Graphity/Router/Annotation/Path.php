@@ -99,6 +99,10 @@ class Path extends \Annotation
      */
     public function getLiteralCharacterCount()
     {
+        if($this->getBuildPath() === "/") {
+            return 0;
+        }
+
         $listOfSegments = explode("/", trim($this->getBuildPath(), "/"));
         $count = 0;
 

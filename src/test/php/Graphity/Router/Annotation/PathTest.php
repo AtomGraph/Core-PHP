@@ -16,6 +16,9 @@ class PathTest extends \PHPUnit_Framework_TestCase
     public function buildPathProvider()
     {
         return array(
+            array("/", "/"),
+            array("/{path}", "/{path}"),
+            array("/{type: \w+}", "/{type}"),
             array("/strip/{year}", "/strip/{year}"), 
             array("/strip/{year}/", "/strip/{year}"), 
             array("/strip/{year: \\d{4}}", "/strip/{year}"), 
@@ -42,6 +45,10 @@ class PathTest extends \PHPUnit_Framework_TestCase
     public function matchPathProvider()
     {
         return array(
+            array("/", "^\\/(\\/.*)?", "/"),
+            array("/{path}", "^\\/(?<path>[^\\/]+)(\\/.*)?", "/something"),
+            array("/{path}", "^\\/(?<path>[^\\/]+)(\\/.*)?", "/something/more"),
+            array("/{type: \w+}", "^\\/(?<type>\\w+)(\\/.*)?", "/something"),
             array("/strip/{year}", "^\/strip\/(?<year>[^\/]+)(\\/.*)?", "/strip/2011"), 
             array("/strip/{year}/", "^\/strip\/(?<year>[^\/]+)(\\/.*)?", "/strip/2011"), 
             array("/strip/{year: \\d{4}}", "^\/strip\/(?<year>\\d{4})(\\/.*)?", "/strip/2011"), 
@@ -69,6 +76,8 @@ class PathTest extends \PHPUnit_Framework_TestCase
     public function characterCountProvider()
     {
         return array(
+            array("/", 0),
+            array("/{path}", 0),
             array("/strip/{year}", 5), 
             array("/strip/{year}/", 5), 
             array("/strip/{year: \\d{4}}", 5), 
@@ -105,6 +114,9 @@ class PathTest extends \PHPUnit_Framework_TestCase
     public function parameterCountProvider()
     {
         return array(
+            array("/", 0, 0),
+            array("/{path}", 1, 0),
+            array("/{type: \\w+}", 1, 1),
             array("/strip/{year}", 1, 0), 
             array("/strip/{year}/", 1, 0), 
             array("/strip/{year: \\d{4}}", 1, 1), 
