@@ -20,7 +20,7 @@
  *  @link           http://graphity.org/
  */
 
-namespace Graphity\Sparql;
+namespace Graphity\Repository;
 
 use Graphity\Rdf\Model;
 use Graphity\Sparql\Query;
