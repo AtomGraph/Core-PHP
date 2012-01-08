@@ -24,6 +24,9 @@ namespace Graphity\Repository;
 
 use Graphity\Rdf\Model;
 use Graphity\Sparql\Query;
+use Graphity\View\ContentType;
+use Graphity\WebApplicationException;
+
 
 /**
  * Generic SPARQL repository wrapper.
@@ -210,7 +213,7 @@ class Repository implements RepositoryInterface
      */
     protected function _query(Query $query, $action, $method, $accept)
     {
-        $preparedQuery = (string)$sparql;
+        $preparedQuery = (string)$query;
 
         if(strlen($preparedQuery) > 2000) {
             /* some SPARQL endpoints cannot process big queries passed
@@ -221,7 +224,7 @@ class Repository implements RepositoryInterface
         $client = $this->getClient()
             ->reset()
             ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath($action))
-            ->setMethod("POST")
+            ->setMethod($method)
             ->setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
             ->setHeader("Accept", $accept)
             ->setData(array('query' => $preparedQuery));
@@ -232,7 +235,7 @@ class Repository implements RepositoryInterface
 
         list($responseCode, $body, $headers) = $client->executeRequest();
 
-        if(!in_array($responseCode, array(204))) {
+        if(!in_array($responseCode, array(200, 201, 204))) {
             throw new WebApplicationException("Could not retrieve data from repository (status code: {$responseCode}).");
         }
 
