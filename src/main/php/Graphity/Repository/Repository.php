@@ -91,7 +91,7 @@ class Repository implements RepositoryInterface
             ->reset()
             ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath("insert"))
             ->setMethod("POST")
-            ->setHeader("Content-Type", "text/plain; charset=utf-8")
+            ->setHeader("Content-Type", "application/sparql-update; charset=utf-8")
             ->setHeader("Accept", ContentType::APPLICATION_RDF_XML)
             ->setData($preparedQuery);
 
@@ -141,7 +141,7 @@ class Repository implements RepositoryInterface
      */
     public function update(Query $query)
     {
-        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_RDF_XML);
+        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_RDF_XML, "application/x-www-form-urlencoded; charset=utf-8");
     }
 
     /**
@@ -218,7 +218,7 @@ class Repository implements RepositoryInterface
      * @param Graphity\Sparql\Query $query
      * @param string $action Action name
      */
-    protected function _query(Query $query, $action, $method, $accept)
+    protected function _query(Query $query, $action, $method, $accept, $contentType = null)
     {
         $preparedQuery = (string)$query;
 
@@ -232,12 +232,19 @@ class Repository implements RepositoryInterface
             ->reset()
             ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath($action))
             ->setMethod($method)
-            ->setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
             ->setHeader("Accept", $accept)
             ->setData(array('query' => $preparedQuery));
 
+        if($contentType !== null) {
+            $client->setHeader("Content-Type", $contentType);
+        }
+
         if(strtoupper($method) === 'POST') {
-            $client->setData("query=" . urlencode($preparedQuery));
+            $param = "query";
+            if($action !== "query") {
+                $param = "update";
+            }
+            $client->setData($param . "=" . urlencode($preparedQuery));
         }
 
         list($responseCode, $body, $headers) = $client->executeRequest();

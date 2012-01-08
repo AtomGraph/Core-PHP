@@ -93,17 +93,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function parseHTTPResponseProvider()
     {
         return array(
-            array(1, 2, 3 ,4),
+            array("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nBODY", 200, "BODY" , array(array("Content-Type", "text/plain"))),
+            array("HTTP/1.1 100 Continue\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nBODY", 200, "BODY" , array(array("Content-Type", "text/plain"))),
+            array("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nSome-Header sdf\r\nBODY", 1000, "" , array()),
         );
     }
     /**
      * @dataProvider parseHTTPResponseProvider
      */
-    public function test_parseHTTPResponseProvider($response, $status, $body, $headers)
+    public function test_parseHTTPResponseProvider($response, $expectedStatus, $expectedBody, $expectedHeaders)
     {
-        $repo = $this->getMockBuilder("Graphity\\Repository\\Repository")
-                     ->disableOriginalConstructor()
-                     ->getMock();
+        $client = new ClientExposed(static::TEST_ENDPOINT_URL);
+        
+        list ($status, $body, $headers) = $client->parseHTTPResponse($response);
+
+        $this->assertEquals($expectedStatus, $status);
+        $this->assertEquals($expectedBody, $body);
+        $this->assertEquals($expectedHeaders, $headers);
     }
 
     /**

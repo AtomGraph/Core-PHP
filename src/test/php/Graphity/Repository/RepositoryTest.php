@@ -194,7 +194,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey("Accept", $client->getAllHeaders());
         $this->assertArrayHasKey("Content-Type", $client->getAllHeaders());
         $this->assertEquals(ContentType::APPLICATION_RDF_XML, $client->getHeader("Accept"));
-        $this->assertContains("text/plain; charset=utf-8", $client->getAllHeaders());
+        $this->assertContains("application/sparql-update; charset=utf-8", $client->getAllHeaders());
         $this->assertEquals($expectedValue, $client->getData());
     }
 
