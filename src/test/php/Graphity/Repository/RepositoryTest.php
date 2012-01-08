@@ -38,6 +38,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     <boolean>%s</boolean>
 </sparql>";
 
+    private static $ASK_BAD_RESPONSE_FMT = "<?xml version=\"1.0\"?>
+<sparql xmlns=\"http://www.w3.org/2005/sparql-results#\">
+    <head></head>
+    <string>%s</string>
+</sparql>";
+
+
     private static $COUNT_RESPONSE_FMT = "<?xml version=\"1.0\"?>
 <sparql xmlns=\"http://www.w3.org/2005/sparql-results#\">
   <head>
@@ -191,6 +198,27 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $client->getData());
     }
 
+    /**
+     * @dataProvider insertDataProvider
+     * @expectedException Graphity\WebApplicationException
+     */
+    public function test_insert_bad_response($triple, $graph, $expectedValue)
+    {
+        $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
+
+        $client->expects($this->once())
+               ->method("executeRequest")
+               ->will($this->returnValue(array(400, "", "")));
+
+        $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
+
+        $model = new Model();
+        $model->addStatement(new Statement($triple['subject'], $triple['predicate'], $triple['object']));
+
+        /** Assert response */
+        $repo->insert($model, $graph);
+    }
+
     public function test_query()
     {
         $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
@@ -210,43 +238,14 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey("query", $client->getData());
     }
 
-    /**
-     * @expectedException Graphity\WebApplicationException
-     */
-    public function test_ask_without_statement()
+    public function test_query_long_query()
     {
-        $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
+        $longQuery = "SELECT * WHERE {\n";
+        while(strlen($longQuery) < 2000) {
+            $longQuery .= "\t?a ?b ?c .\n";
+        }
+        $longQuery .= "}";
 
-        $client->expects($this->exactly(0))
-               ->method("executeRequest")
-               ->will($this->returnValue(array(200, self::$RESPONSE, "")));
-
-        $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
-
-        $repo->ask(Query::newInstance()->setQuery("PREFIX ex: <http://example.org/>\nSELECT * {?a ?b ?c}"));
-    }
-
-    /**
-     * @expectedException Graphity\WebApplicationException
-     */
-    public function test_ask_empty_response()
-    {
-        $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
-
-        $client->expects($this->once())
-               ->method("executeRequest")
-               ->will($this->returnValue(array(200, "", "")));
-
-        $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
-
-        $repo->ask(Query::newInstance()->setQuery("PREFIX ex: <http://example.org/>\nASK * {?a ?b ?c}"));
-    }
-
-    /**
-     * @expectedException Graphity\WebApplicationException
-     */
-    public function test_ask_invalid_response()
-    {
         $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
 
         $client->expects($this->once())
@@ -255,7 +254,72 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
 
         $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
 
-        $repo->ask(Query::newInstance()->setQuery("PREFIX ex: <http://example.org/>\nASK * {?a ?b ?c}"));
+        $this->assertEquals(self::$RESPONSE, $repo->query(Query::newInstance()->setQuery($longQuery)));
+
+        $this->assertEquals("POST", $client->getMethod());
+        $this->assertEquals("/" . static::TEST_REPOSITORY_NAME . "/sparql", $client->getPath());
+        $this->assertEquals(ContentType::APPLICATION_RDF_XML, $client->getHeader("Accept"));
+        $this->assertEquals("query=" . urlencode($longQuery), $client->getData());
+    }
+
+    /**
+     * @expectedException Graphity\WebApplicationException
+     */
+    public function test_query_bad_response()
+    {
+        $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
+
+        $client->expects($this->once())
+               ->method("executeRequest")
+               ->will($this->returnValue(array(400, self::$RESPONSE, "")));
+
+        $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
+
+        $repo->query(Query::newInstance()->setQuery(self::$QUERY));
+    }
+
+    public function test_update()
+    {
+        $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
+
+        $client->expects($this->once())
+               ->method("executeRequest")
+               ->will($this->returnValue(array(200, self::$RESPONSE, "")));
+
+        $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
+        
+        $repo->update(Query::newInstance()->setQuery("...")); 
+    }
+
+    public function askProvider_invalid()
+    {
+        $invalidQuery = "PREFIX ex: <http://example.org/>\nSELECT * {?a ?b ?c}";
+        $validQuery = "PREFIX ex: <http://example.org/>\n ASK * {?a ?b ?c}";
+
+        $badResponse = sprintf(self::$ASK_BAD_RESPONSE_FMT, "true");
+
+        return array(
+            array(self::$RESPONSE, $invalidQuery, 0),
+            array("", $validQuery, 1),
+            array(self::$RESPONSE, $validQuery, 1),
+            array($badResponse, $validQuery, 1),
+        );
+    }
+    /**
+     * @dataProvider askProvider_invalid
+     * @expectedException Graphity\WebApplicationException
+     */
+    public function test_ask_invalid($response, $query, $executeRequest)
+    {
+        $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
+
+        $client->expects($this->exactly($executeRequest))
+               ->method("executeRequest")
+               ->will($this->returnValue(array(200, $response, "")));
+
+        $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
+
+        $repo->ask(Query::newInstance()->setQuery($query));
     }
 
     public function askProvider()
@@ -285,10 +349,12 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     public function countProvider_invalid()
     {
         $invalidQuery = "PREFIX ex: <http://example.org/>\nSELECT * {?a ?b ?c}";
+        $badQuery = "PREFIX ex: <http://example.org/>\n SELECT COUNT(*) AS ?something {?a ?b ?c}";
         $validQuery = "PREFIX ex: <http://example.org/>\n SELECT COUNT(*) AS ?count {?a ?b ?c}";
 
         return array(
             array(self::$RESPONSE, $invalidQuery, 0),
+            array(self::$RESPONSE, $badQuery, 0),
             array("", $validQuery, 1),
             array(self::$RESPONSE, $validQuery, 1),
         );

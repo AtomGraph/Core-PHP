@@ -121,6 +121,13 @@ class Repository implements RepositoryInterface
     public function query(Query $query)
     {
         return $this->_query($query, 'query', 'GET', ContentType::APPLICATION_RDF_XML);
+
+        // make sure triples are grouped by resource uri.
+        $doc = new \DOMDocument("1.0", "UTF-8");
+        $doc->loadXML($result);
+        $result= XSLTBuilder::fromStylesheetURI((dirname(__FILE__) . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "group-triples.xsl"))->document($doc)->buildXML();
+
+        return $result;
     }
 
     /**
@@ -134,14 +141,7 @@ class Repository implements RepositoryInterface
      */
     public function update(Query $query)
     {
-        $result = $this->_query($query, 'update', 'POST', ContentType::APPLICATION_RDF_XML);
-
-        // make sure triples are grouped by resource uri.
-        $doc = new \DOMDocument("1.0", "UTF-8");
-        $doc->loadXML($result);
-        $result= XSLTBuilder::fromStylesheetURI((dirname(__FILE__) . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "group-triples.xsl"))->document($doc)->buildXML();
-
-        return $result;
+        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_RDF_XML);
     }
 
     /**

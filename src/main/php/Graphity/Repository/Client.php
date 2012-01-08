@@ -83,6 +83,8 @@ class Client
 
     /**
      * Execute request on SPARQL endpoint.
+     *
+     * @codeCoverageIgnore
      */
     public function executeRequest()
     {

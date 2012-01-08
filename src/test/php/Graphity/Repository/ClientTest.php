@@ -18,6 +18,11 @@ class ClientExposed extends Client
     {
         return parent::prepareHTTPHeaders();
     }
+
+    public function parseHTTPResponse($response)
+    {
+        return parent::parseHTTPResponse($response);
+    }
 }
 
 class ClientTest extends \PHPUnit_Framework_TestCase
@@ -49,6 +54,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             array("/repository/query", null, "GET", "/repository/query"),
             array("/repository/query", array('key1' => 'value1', 'key2' => 'encoded value%'), "GET", "/repository/query?key1=value1&key2=encoded+value%25"),
             array("/repository/query", ("key1=value1&key2=" . urlencode("encoded value%")), "GET", "/repository/query?key1=value1&key2=encoded+value%25"),
+            array("/repository/query?something=here", ("key1=value1&key2=" . urlencode("encoded value%")), "GET", "/repository/query?something=here&key1=value1&key2=encoded+value%25"),
 
             array(null, null, "POST", ""),
             array("/repository/query", null, "POST", "/repository/query"),
@@ -82,6 +88,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             array("Content-Type", "application/rdf+xml"),
             array("Content-Type", "application/json"), 
         );
+    }
+
+    public function parseHTTPResponseProvider()
+    {
+        return array(
+            array(1, 2, 3 ,4),
+        );
+    }
+    /**
+     * @dataProvider parseHTTPResponseProvider
+     */
+    public function test_parseHTTPResponseProvider($response, $status, $body, $headers)
+    {
+        $repo = $this->getMockBuilder("Graphity\\Repository\\Repository")
+                     ->disableOriginalConstructor()
+                     ->getMock();
     }
 
     /**
