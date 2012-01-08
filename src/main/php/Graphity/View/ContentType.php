@@ -40,5 +40,7 @@ class ContentType
     const APPLICATION_RSS_XML = "application/rss+xml";
 
     const APPLICATION_JSON = "application/json";
+
+    const APPLICATION_SPARQL_XML = "application/sparql-results+xml";
 }
 
