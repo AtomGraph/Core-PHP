@@ -80,13 +80,20 @@ class Repository implements RepositoryInterface
             return false;
         }
 
+        $preparedQuery = "";
+        if($graph === null) {
+            $preparedQuery = sprintf("INSERT DATA {\n%s}", (string)$model);
+        } else {
+            $preparedQuery = sprintf("INSERT DATA {\nGRAPH <%s> {\n%s}\n}", $graph, (string)$model);
+        }
+
         $client = $this->getClient()
             ->reset()
             ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath("insert"))
             ->setMethod("POST")
             ->setHeader("Content-Type", "text/plain; charset=utf-8")
             ->setHeader("Accept", ContentType::APPLICATION_RDF_XML)
-            ->setData((string)$model); // TODO: encapsulate in INSERT DATA { GRAPH <graph> { } }
+            ->setData($preparedQuery);
 
         list($responseCode, $body, $headers) = $client->executeRequest();
 

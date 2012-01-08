@@ -79,39 +79,93 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
                 'subject' => new Resource("http://example.org/name-nameson#1"),
                 'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
                 'object' => new Literal("namen"),
-            ), "<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\" .\n"),
+            ), 
+            null,
+            "INSERT DATA {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\" .\n}"),
             array(array(
                 'subject' => new Resource("http://example.org/name-nameson#1"),
                 'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
                 'object' => new Literal("namen", null, "en"),
-            ), "<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\"@en .\n"),
+            ), 
+            null,
+            "INSERT DATA {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\"@en .\n}"),
             array(array(
                 'subject' => new Resource("http://example.org/name-nameson#1"),
                 'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
                 'object' => new Literal("namen \"nicknamen\" lastnamen", null, "en"),
-            ), "<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen \\\"nicknamen\\\" lastnamen\"@en .\n"),
+            ), 
+            null,
+            "INSERT DATA {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen \\\"nicknamen\\\" lastnamen\"@en .\n}"),
             array(array(
                 'subject' => new Resource("http://example.org/name-nameson#1"),
                 'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
                 'object' => new Literal("namen", XSD::string),
-            ), "<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\"^^<http://www.w3.org/2001/XMLSchema#string> .\n"),
+            ), 
+            null,
+            "INSERT DATA {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\"^^<http://www.w3.org/2001/XMLSchema#string> .\n}"),
             array(array(
                 'subject' => new Resource("http://example.org/name-nameson#1"),
                 'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
                 'object' => new Literal("namen \"nicknamen\" lastnamen", XSD::string),
-            ), "<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen \\\"nicknamen\\\" lastnamen\"^^<http://www.w3.org/2001/XMLSchema#string> .\n"),
+            ), 
+            null,
+            "INSERT DATA {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen \\\"nicknamen\\\" lastnamen\"^^<http://www.w3.org/2001/XMLSchema#string> .\n}"),
             array(array(
                 'subject' => new Resource("http://example.org/name-nameson#1"),
                 'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
                 'object' => new Resource("http://example.org/alias"),
-            ), "<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> <http://example.org/alias> .\n"),
+            ), 
+            null,
+            "INSERT DATA {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> <http://example.org/alias> .\n}"),
+            array(array(
+                'subject' => new Resource("http://example.org/name-nameson#1"),
+                'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
+                'object' => new Literal("namen"),
+            ), 
+            "http://example.org/graph",
+            "INSERT DATA {\nGRAPH <http://example.org/graph> {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\" .\n}\n}"),
+            array(array(
+                'subject' => new Resource("http://example.org/name-nameson#1"),
+                'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
+                'object' => new Literal("namen", null, "en"),
+            ), 
+            "http://example.org/graph",
+            "INSERT DATA {\nGRAPH <http://example.org/graph> {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\"@en .\n}\n}"),
+            array(array(
+                'subject' => new Resource("http://example.org/name-nameson#1"),
+                'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
+                'object' => new Literal("namen \"nicknamen\" lastnamen", null, "en"),
+            ), 
+            "http://example.org/graph",
+            "INSERT DATA {\nGRAPH <http://example.org/graph> {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen \\\"nicknamen\\\" lastnamen\"@en .\n}\n}"),
+            array(array(
+                'subject' => new Resource("http://example.org/name-nameson#1"),
+                'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
+                'object' => new Literal("namen", XSD::string),
+            ), 
+            "http://example.org/graph",
+            "INSERT DATA {\nGRAPH <http://example.org/graph> {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen\"^^<http://www.w3.org/2001/XMLSchema#string> .\n}\n}"),
+            array(array(
+                'subject' => new Resource("http://example.org/name-nameson#1"),
+                'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
+                'object' => new Literal("namen \"nicknamen\" lastnamen", XSD::string),
+            ), 
+            "http://example.org/graph",
+            "INSERT DATA {\nGRAPH <http://example.org/graph> {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> \"namen \\\"nicknamen\\\" lastnamen\"^^<http://www.w3.org/2001/XMLSchema#string> .\n}\n}"),
+            array(array(
+                'subject' => new Resource("http://example.org/name-nameson#1"),
+                'predicate' => new Resource("http://xmlns.com/foaf/0.1/nick"),
+                'object' => new Resource("http://example.org/alias"),
+            ), 
+            "http://example.org/graph",
+            "INSERT DATA {\nGRAPH <http://example.org/graph> {\n<http://example.org/name-nameson#1> <http://xmlns.com/foaf/0.1/nick> <http://example.org/alias> .\n}\n}"),
         );
     }
 
     /**
      * @dataProvider insertDataProvider
      */
-    function test_insert_with_single_triple($triple, $expectedValue)
+    function test_insert_with_single_triple($triple, $graph, $expectedValue)
     {
         $client = $this->getMock("Graphity\\Repository\\Client", array("executeRequest"), array(static::TEST_ENDPOINT_URL));
 
@@ -125,7 +179,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $model->addStatement(new Statement($triple['subject'], $triple['predicate'], $triple['object']));
 
         /** Assert response */
-        $this->assertTrue($repo->insert($model));
+        $this->assertTrue($repo->insert($model, $graph));
 
         /** Assert request */
         $this->assertEquals("POST", $client->getMethod());
