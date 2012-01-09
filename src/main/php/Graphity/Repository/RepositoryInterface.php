@@ -68,15 +68,6 @@ interface RepositoryInterface
     public function update(Query $query);
 
     /**
-     * Execute SPARQL COUNT query.
-     *
-     * @param Graphity\Sparql\Query $query
-     *
-     * @return boolean
-     */
-    public function count(Query $query);
-
-    /**
      * Execute SPARQL ASK query.
      *
      * @param string $query

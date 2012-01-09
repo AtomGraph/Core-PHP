@@ -145,41 +145,6 @@ class Repository implements RepositoryInterface
     }
 
     /**
-     * Execute SPARQL COUNT query.
-     *
-     * @param Graphity\Sparql\Query $query
-     *
-     * @return boolean
-     */
-    public function count(Query $query)
-    {
-        $numOfMatches = preg_match('/(?<query>COUNT([^}]+)})/ims', $query);
-        if($numOfMatches === 0) {
-            throw new WebApplicationException("Could not find COUNT statement in SPARQL query: '" . str_ireplace("\n", "\\n", $query));
-        }
-        if(strpos($query, "?count") === false) {
-            throw new WebApplicationException("Could not find ?count binding in SPARQL query: '" . str_ireplace("\n", "\\n", $query));
-        }
-
-        $response = $this->_query($query, 'query', 'GET', ContentType::APPLICATION_SPARQL_XML);
-
-        if(empty($response)) {
-            throw new WebApplicationException("Invalid count response from repository.");
-        }
-
-        $document = new \DOMDocument("1.0", "utf-8");
-        if(@$document->loadXML($response) === false) {
-            throw new WebApplicationException("Could not parse response from repository.");
-        }
-        $xpath = new \DOMXPath($document);
-        $xpath->registerNamespace("sparql", "http://www.w3.org/2005/sparql-results#");
-
-        $count = (int)$xpath->evaluate("number(//sparql:binding[@name='count']/sparql:literal)");
-
-        return $count;
-    }
-
-    /**
      * Execute SPARQL ASK query.
      *
      * @param string $query
