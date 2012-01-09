@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  *  @package        graphity
- *  @author         Julius Šėporaitis <julius@seporaitis.net>
+ *  @author         Julius Šėporaitis <julius@graphity.org>
  *  @link           http://graphity.org/
  */
 

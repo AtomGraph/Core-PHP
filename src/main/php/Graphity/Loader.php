@@ -28,7 +28,7 @@
  *      is already coded on line 106. Whats the point?
  *   3. 'require' changed to 'include_once' for better performance. (http://arin.me/blog/php-require-vs-include-vs-require_once-vs-include_once-performance-test)
  *
- * @author Julius Šėporaitis <julius@seporaitis.net>
+ * @author Julius Šėporaitis <julius@graphity.org>
  */
 
 namespace Graphity;

@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  *  @package        graphity
- *  @author         Martynas Jusevičius <pumba@xml.lt>
+ *  @author         Martynas Jusevičius <martynas@graphity.org>
  *  @link           http://graphity.org/
  */
 
