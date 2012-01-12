@@ -126,6 +126,7 @@ class Repository implements RepositoryInterface
         // make sure triples are grouped by resource uri.
         $doc = new \DOMDocument("1.0", "UTF-8");
         $doc->loadXML($result);
+        
         $result= XSLTBuilder::fromStylesheetURI((dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "group-triples.xsl"))->document($doc)->buildXML();
 
         return $result;
