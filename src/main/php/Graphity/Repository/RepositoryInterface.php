@@ -24,6 +24,7 @@ namespace Graphity\Repository;
 
 use Graphity\Rdf\Model;
 use Graphity\Sparql\Query;
+use Graphity\View\ContentType;
 
 /**
  * Interface to the data repository.
@@ -48,13 +49,17 @@ interface RepositoryInterface
      * Should try to retrieve RDF/XML and return values grouped by
      * resource.
      *
+     * If $accept is "application/sparql-xml" it will return raw xml
+     * as received from the datastore.
+     *
      * @param Sparql\Query $query   Query instance
+     * @param stirng $accept        Response type (default: "application/rdf-xml")
      *
      * @throws Graphity\Sparql\Repository\Exception in case of error.
      *
      * @return string
      */
-    public function query(Query $query);
+    public function query(Query $query, $accept = ContentType::APPLICATION_RDF_XML);
 
     /**
      * Update data in the repository with a SPARQL query.

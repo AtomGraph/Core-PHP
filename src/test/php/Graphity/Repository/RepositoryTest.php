@@ -30,7 +30,25 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         ?a ?b ?c
     }";
 
-    private static $RESPONSE = "OK";
+    private static $RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:ex=\"http://example.org/#\">
+  <rdf:Description rdf:about=\"http://example.org/resource1\">
+      <ex:field1>value1</ex:field1>
+  </rdf:Description>
+  <rdf:Description rdf:about=\"http://example.org/resource1\">
+      <ex:field2>value2</ex:field2>
+  </rdf:Description>
+</rdf:RDF>
+";
+
+    private static $RESPONSE_GROUPED = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:ex=\"http://example.org/#\">
+  <rdf:Description rdf:about=\"http://example.org/resource1\">
+    <ex:field1>value1</ex:field1>
+    <ex:field2>value2</ex:field2>
+  </rdf:Description>
+</rdf:RDF>
+";
 
     private static $ASK_RESPONSE_FMT = "<?xml version=\"1.0\"?>
 <sparql xmlns=\"http://www.w3.org/2005/sparql-results#\">
@@ -194,8 +212,8 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey("Accept", $client->getAllHeaders());
         $this->assertArrayHasKey("Content-Type", $client->getAllHeaders());
         $this->assertEquals(ContentType::APPLICATION_RDF_XML, $client->getHeader("Accept"));
-        $this->assertContains("application/sparql-update; charset=utf-8", $client->getAllHeaders());
-        $this->assertEquals($expectedValue, $client->getData());
+        $this->assertContains("application/x-www-form-urlencoded; charset=utf-8", $client->getAllHeaders());
+        $this->assertEquals("update=" . urlencode($expectedValue), $client->getData());
     }
 
     /**
@@ -229,7 +247,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
 
         $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
 
-        $this->assertEquals(self::$RESPONSE, $repo->query(Query::newInstance()->setQuery(self::$QUERY)));
+        $this->assertEquals(self::$RESPONSE_GROUPED, $repo->query(Query::newInstance()->setQuery(self::$QUERY)));
 
         $this->assertEquals("GET", $client->getMethod());
         $this->assertEquals("/" . static::TEST_REPOSITORY_NAME . "/sparql", $client->getPath());
@@ -254,7 +272,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
 
         $repo = new Repository($client, static::TEST_REPOSITORY_NAME);
 
-        $this->assertEquals(self::$RESPONSE, $repo->query(Query::newInstance()->setQuery($longQuery)));
+        $this->assertEquals(self::$RESPONSE_GROUPED, $repo->query(Query::newInstance()->setQuery($longQuery)));
 
         $this->assertEquals("POST", $client->getMethod());
         $this->assertEquals("/" . static::TEST_REPOSITORY_NAME . "/sparql", $client->getPath());

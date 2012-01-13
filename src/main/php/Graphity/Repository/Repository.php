@@ -24,6 +24,7 @@ namespace Graphity\Repository;
 
 use Graphity\Rdf\Model;
 use Graphity\Sparql\Query;
+use Graphity\Util\XSLTBuilder;
 use Graphity\View\ContentType;
 use Graphity\WebApplicationException;
 
@@ -91,9 +92,9 @@ class Repository implements RepositoryInterface
             ->reset()
             ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath("insert"))
             ->setMethod("POST")
-            ->setHeader("Content-Type", "application/sparql-update; charset=utf-8")
+            ->setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
             ->setHeader("Accept", ContentType::APPLICATION_RDF_XML)
-            ->setData($preparedQuery);
+            ->setData("update=" . urlencode($preparedQuery));
 
         list($responseCode, $body, $headers) = $client->executeRequest();
 
@@ -112,20 +113,23 @@ class Repository implements RepositoryInterface
      * Should try to retrieve RDF/XML and return values grouped by
      * resource.
      *
-     * @param Graphity\Sparql\Query $query   Query instance
+     * @param Graphity\Sparql\Query $query      Query instance
+     * @param string $accept                    Response type (default: "application/rdf-xml")
      *
      * @throws Graphity\Repository\Exception in case of error.
      *
      * @return string
      */
-    public function query(Query $query)
+    public function query(Query $query, $accept = ContentType::APPLICATION_RDF_XML)
     {
-        return $this->_query($query, 'query', 'GET', ContentType::APPLICATION_RDF_XML);
+        $result = $this->_query($query, 'query', 'GET', $accept);
 
-        // make sure triples are grouped by resource uri.
-        $doc = new \DOMDocument("1.0", "UTF-8");
-        $doc->loadXML($result);
-        $result= XSLTBuilder::fromStylesheetURI((dirname(__FILE__) . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webapp" . DIRECTORY_SEPARATOR . "WEB-INF" . DIRECTORY_SEPARATOR . "xsl" . DIRECTORY_SEPARATOR . "group-triples.xsl"))->document($doc)->buildXML();
+        if($accept === ContentType::APPLICATION_RDF_XML) {
+            // make sure triples are grouped by resource uri.
+            $doc = new \DOMDocument("1.0", "UTF-8");
+            $doc->loadXML($result);
+            $result = XSLTBuilder::fromStylesheetURI((dirname(__FILE__) . "../../../../webapp/WEB-INF/xsl/group-triples.xsl"))->document($doc)->buildXML();
+        }
 
         return $result;
     }
