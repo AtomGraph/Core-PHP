@@ -92,9 +92,9 @@ class Repository implements RepositoryInterface
             ->reset()
             ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath("insert"))
             ->setMethod("POST")
-            ->setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-            ->setHeader("Accept", ContentType::APPLICATION_RDF_XML)
-            ->setData("update=" . urlencode($preparedQuery));
+            ->setHeader("Content-Type", "application/sparql-update")//"application/x-www-form-urlencoded; charset=utf-8"
+            ->setHeader("Accept", ContentType::APPLICATION_SPARQL_XML)//"application/sparql-results+json"
+            ->setData($preparedQuery);
 
         list($responseCode, $body, $headers) = $client->executeRequest();
 
