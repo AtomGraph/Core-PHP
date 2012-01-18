@@ -101,7 +101,7 @@ class Repository implements RepositoryInterface
         if(!in_array($responseCode, array(200, // OK
             201, // Created
             204))) { // No Content
-            throw new WebApplicationException("Could not insert data into repository: " . $this->getRepositoryName());
+            throw new WebApplicationException("Could not insert data into repository: " . $this->getRepositoryName(), $responseCode);
         }
 
         return true;
@@ -219,7 +219,7 @@ class Repository implements RepositoryInterface
         list($responseCode, $body, $headers) = $client->executeRequest();
 
         if(!in_array($responseCode, array(200, 201, 204))) {
-            throw new WebApplicationException("Could not retrieve data from repository (status code: {$responseCode}).");
+            throw new WebApplicationException("Could not retrieve data from repository", $responseCode);
         }
 
         return $body;
