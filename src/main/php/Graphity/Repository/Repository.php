@@ -130,7 +130,7 @@ class Repository implements RepositoryInterface
      */
     public function update(Query $query)
     {
-        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_SPARQL_XML, "application/sparql-update");
+        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_SPARQL_XML, ContentType::APPLICATION_SPARQL_UPDATE);
     }
 
     /**
