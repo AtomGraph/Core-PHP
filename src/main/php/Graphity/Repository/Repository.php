@@ -145,7 +145,7 @@ class Repository implements RepositoryInterface
      */
     public function update(Query $query)
     {
-        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_RDF_XML, "application/x-www-form-urlencoded; charset=utf-8");
+        return $this->_query($query, 'update', 'POST', ContentType::APPLICATION_SPARQL_XML, "application/sparql-update");
     }
 
     /**
@@ -211,9 +211,11 @@ class Repository implements RepositoryInterface
         if(strtoupper($method) === 'POST') {
             $param = "query";
             if($action !== "query") {
-                $param = "update";
+                //update
+                $client->setData($preparedQuery);
+            } else {
+            	$client->setData($param . "=" . urlencode($preparedQuery));
             }
-            $client->setData($param . "=" . urlencode($preparedQuery));
         }
 
         list($responseCode, $body, $headers) = $client->executeRequest();
