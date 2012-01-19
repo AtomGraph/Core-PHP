@@ -211,9 +211,9 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("/" . static::TEST_REPOSITORY_NAME . "/sparql", $client->getPath());
         $this->assertArrayHasKey("Accept", $client->getAllHeaders());
         $this->assertArrayHasKey("Content-Type", $client->getAllHeaders());
-        $this->assertEquals(ContentType::APPLICATION_RDF_XML, $client->getHeader("Accept"));
-        $this->assertContains("application/x-www-form-urlencoded; charset=utf-8", $client->getAllHeaders());
-        $this->assertEquals("update=" . urlencode($expectedValue), $client->getData());
+        $this->assertEquals(ContentType::APPLICATION_SPARQL_XML, $client->getHeader("Accept"));
+        $this->assertContains(ContentType::APPLICATION_SPARQL_UPDATE_XML, $client->getAllHeaders());
+        $this->assertEquals($expectedValue, $client->getData());
     }
 
     /**
