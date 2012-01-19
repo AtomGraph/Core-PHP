@@ -43,6 +43,6 @@ class ContentType
 
     const APPLICATION_SPARQL_XML = "application/sparql-results+xml";
 
-    const APPLICATION_SPARQL_UPDATE_XML = "application/sparql-update";
+    const APPLICATION_SPARQL_UPDATE = "application/sparql-update";
 }
 

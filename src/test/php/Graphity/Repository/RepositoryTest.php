@@ -212,7 +212,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey("Accept", $client->getAllHeaders());
         $this->assertArrayHasKey("Content-Type", $client->getAllHeaders());
         $this->assertEquals(ContentType::APPLICATION_SPARQL_XML, $client->getHeader("Accept"));
-        $this->assertContains(ContentType::APPLICATION_SPARQL_UPDATE_XML, $client->getAllHeaders());
+        $this->assertContains(ContentType::APPLICATION_SPARQL_UPDATE, $client->getAllHeaders());
         $this->assertEquals($expectedValue, $client->getData());
     }
 

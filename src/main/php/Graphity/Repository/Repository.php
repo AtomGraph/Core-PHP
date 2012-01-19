@@ -88,22 +88,7 @@ class Repository implements RepositoryInterface
             $preparedQuery = sprintf("INSERT DATA {\nGRAPH <%s> {\n%s}\n}", $graph, (string)$model);
         }
 
-        $client = $this->getClient()
-            ->reset()
-            ->setPath('/' . $this->getRepositoryName() . '/' . $this->getActionPath("insert"))
-            ->setMethod("POST")
-            ->setHeader("Content-Type", "application/sparql-update")//"application/x-www-form-urlencoded; charset=utf-8"
-            ->setHeader("Accept", ContentType::APPLICATION_SPARQL_XML)//"application/sparql-results+json"
-            ->setData($preparedQuery);
-
-        list($responseCode, $body, $headers) = $client->executeRequest();
-
-        if(!in_array($responseCode, array(200, // OK
-            201, // Created
-            204))) { // No Content
-            throw new WebApplicationException("Could not insert data into repository: " . $this->getRepositoryName(), $responseCode);
-        }
-
+        $this->_query($preparedQuery, 'update', 'POST', ContentType::APPLICATION_SPARQL_XML, ContentType::APPLICATION_SPARQL_UPDATE);
         return true;
     }
 
@@ -184,10 +169,10 @@ class Repository implements RepositoryInterface
     /**
      * Query the repository.
      *
-     * @param Graphity\Sparql\Query $query
+     * @param string $query
      * @param string $action Action name
      */
-    protected function _query(Query $query, $action, $method, $accept, $contentType = null)
+    protected function _query($query, $action, $method, $accept, $contentType = null)
     {
         $preparedQuery = (string)$query;
 
