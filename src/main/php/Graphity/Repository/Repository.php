@@ -24,7 +24,6 @@ namespace Graphity\Repository;
 
 use Graphity\Rdf\Model;
 use Graphity\Sparql\Query;
-use Graphity\Util\XSLTBuilder;
 use Graphity\View\ContentType;
 use Graphity\WebApplicationException;
 
@@ -107,16 +106,7 @@ class Repository implements RepositoryInterface
      */
     public function query(Query $query, $accept = ContentType::APPLICATION_RDF_XML)
     {
-        $result = $this->_query($query, 'query', 'GET', $accept);
-
-        if($accept === ContentType::APPLICATION_RDF_XML) {
-            // make sure triples are grouped by resource uri.
-            $doc = new \DOMDocument("1.0", "UTF-8");
-            $doc->loadXML($result);
-            $result = XSLTBuilder::fromStylesheetURI((dirname(__FILE__) . "../../../../webapp/WEB-INF/xsl/group-triples.xsl"))->document($doc)->buildXML();
-        }
-
-        return $result;
+        return $this->_query($query, 'query', 'GET', $accept);
     }
 
     /**
