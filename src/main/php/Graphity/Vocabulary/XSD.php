@@ -31,7 +31,7 @@ class XSD
 
     const integer = "http://www.w3.org/2001/XMLSchema#integer";
 
-    const decimal = "http://www.w3.org/2001/XMLSchema#integer";
+    const decimal = "http://www.w3.org/2001/XMLSchema#decimal";
 
     const string = "http://www.w3.org/2001/XMLSchema#string";
 
