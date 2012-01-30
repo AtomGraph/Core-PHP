@@ -41,10 +41,5 @@ class Exception extends \RuntimeException
 
         return $model;
     }
-    
-    public function __toString()
-    {
-    	return sprintf("%s\n[%d] %s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $_SERVER['HTTP_REFERER'], $this->getTraceAsString()); 
-    }
 
 }
