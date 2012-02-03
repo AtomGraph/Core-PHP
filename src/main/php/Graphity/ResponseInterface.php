@@ -78,6 +78,12 @@ interface ResponseInterface
      */
     const SC_METHOD_NOT_ALLOWED = 405;
 
+    /**
+     * The resource identified by the request is only capable of generating response entities which have
+     * content characteristics not acceptable according to the accept headers sent in the request. 
+     */
+    const SC_METHOD_NOT_ACCEPTABLE = 406;
+
     /** 
      * The request could not be completed due to a conflict with the current state of the resource. 
      * This code is only allowed in situations where it is expected that the user might be able to 

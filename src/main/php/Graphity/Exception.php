@@ -28,16 +28,29 @@ use Graphity\Vocabulary as Vocabulary;
 /**
  * This should be the root of all Graphity Exceptions
  */
-class Exception extends \RuntimeException
+class Exception extends \RuntimeException // implements Rdf\ResourceInterface
 {
+    private $bnodeId = null;
+
+    public function getAnonymousId()
+    {
+        if ($this->bnodeId == null) $this->bnodeId = "_:bnode" . uniqid(); // lazy initialization because we can't override __construct()
+        return $this->bnodeId;
+    }
+
     public function toModel()
     {
         $model = new Rdf\Model();
 
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::Exception)));
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Http::statusCodeNumber), new Rdf\Literal($this->getCode(), Vocabulary\XSD::int)));
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\DC::description), new Rdf\Literal($this->getMessage())));
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Graphity::trace), new Rdf\Literal($this->getTraceAsString())));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::Exception)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\Http::statusCodeNumber), new Rdf\Literal($this->getCode(), Vocabulary\XSD::int)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\DC::description), new Rdf\Literal($this->getMessage())));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\Graphity::trace), new Rdf\Literal($this->getTraceAsString())));
+
+        if ($this->getPrevious() != null && $this->getPrevious() instanceof \Graphity\Exception) {
+            $model = $model->union($this->getPrevious()->toModel());
+            $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\Graphity::previousException), new Rdf\Resource($this->getPrevious()->getAnonymousId())));
+        }
 
         return $model;
     }

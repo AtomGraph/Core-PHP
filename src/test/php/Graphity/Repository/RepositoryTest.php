@@ -209,7 +209,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider insertDataProvider
-     * @expectedException Graphity\WebApplicationException
+     * @expectedException Graphity\Repository\RepositoryException
      */
     public function test_insert_bad_response($triple, $graph, $expectedValue)
     {
@@ -272,7 +272,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Graphity\WebApplicationException
+     * @expectedException Graphity\Repository\RepositoryException
      */
     public function test_query_bad_response()
     {
@@ -316,7 +316,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @dataProvider askProvider_invalid
-     * @expectedException Graphity\WebApplicationException
+     * @expectedException Graphity\Repository\RepositoryException
      */
     public function test_ask_invalid($response, $query, $executeRequest)
     {

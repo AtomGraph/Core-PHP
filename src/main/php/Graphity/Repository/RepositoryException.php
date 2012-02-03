@@ -20,19 +20,22 @@
  *  @link           http://graphity.org/
  */
 
-namespace Graphity\Vocabulary;
+namespace Graphity\Repository;
 
-class Graphity
+use Graphity\Rdf;
+use Graphity\Exception;
+use Graphity\Vocabulary as Vocabulary;
+
+class RepositoryException extends Exception
 {
-    const NS = "http://graphity.org/ontology/";
 
-    const Exception = "http://graphity.org/ontology/Exception";
+    public function toModel()
+    {
+        $model = parent::toModel();
 
-    const WebApplicationException = "http://graphity.org/ontology/WebApplicationException";
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::RepositoryException)));
 
-    const RepositoryException = "http://graphity.org/ontology/RepositoryException";
+        return $model;
+    }
 
-    const trace = "http://graphity.org/ontology/trace";
-
-    const previousException = "http://graphity.org/ontology/previousException";
 }

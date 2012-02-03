@@ -25,7 +25,6 @@ namespace Graphity\Repository;
 use Graphity\Rdf\Model;
 use Graphity\Sparql\Query;
 use Graphity\View\ContentType;
-use Graphity\WebApplicationException;
 
 
 /**
@@ -100,7 +99,7 @@ class Repository implements RepositoryInterface
      * @param Graphity\Sparql\Query $query      Query instance
      * @param string $accept                    Response type (default: "application/rdf-xml")
      *
-     * @throws Graphity\Repository\Exception in case of error.
+     * @throws Graphity\Repository\RepositoryException in case of error.
      *
      * @return string
      */
@@ -114,7 +113,7 @@ class Repository implements RepositoryInterface
      *
      * @param Sparql\Query $query   Query instance
      *
-     * @throws Graphity\Sparql\Repository\Exception in case of error.
+     * @throws Graphity\Repository\RepositoryException in case of error.
      *
      * @return string
      */
@@ -134,23 +133,23 @@ class Repository implements RepositoryInterface
     {
         $numOfMatches = preg_match('/(?<query>ASK([^}]+)})/ims', $query);
         if($numOfMatches === 0) {
-            throw new WebApplicationException("Could not find ASK statement in SPARQL query: '" . str_ireplace("\n", "\\n", $query));
+            throw new RepositoryException("Could not find ASK statement in SPARQL query: '" . str_ireplace("\n", "\\n", $query));
         }
 
         $response = $this->_query($query, 'query', 'GET', ContentType::APPLICATION_SPARQL_XML);
 
         if(empty($response)) {
-            throw new WebApplicationException("Invalid endpoint response.");
+            throw new RepositoryException("Invalid endpoint response.");
         }
 
         try {
             $xmlObject = new \SimpleXMLElement($response);
         } catch(\Exception $e) {
-            throw new WebApplicationException($e->getMessage());
+            throw new RepositoryException($e->getMessage(), $e->getCode(), $e);
         }
 
         if(!isset($xmlObject->boolean)) {
-            throw new WebApplicationException("Could not interpret response.");
+            throw new RepositoryException("Could not interpret response.");
         }
 
         return ((string)$xmlObject->boolean === "true");
@@ -196,7 +195,7 @@ class Repository implements RepositoryInterface
         list($responseCode, $body, $headers) = $client->executeRequest();
 
         if(!in_array($responseCode, array(200, 201, 204))) {
-            throw new WebApplicationException("Could not retrieve data from repository", $responseCode);
+            throw new RepositoryException("Could not retrieve data from repository", $responseCode);
         }
 
         return $body;

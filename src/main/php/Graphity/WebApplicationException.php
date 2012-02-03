@@ -37,7 +37,7 @@ class WebApplicationException extends Exception
     {
         $model = parent::toModel();
 
-        $model->addStatement(new Rdf\Statement(new Rdf\Resource("_:exc"), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::WebApplicationException)));
+        $model->addStatement(new Rdf\Statement(new Rdf\Resource($this->getAnonymousId()), new Rdf\Property(Vocabulary\Rdf::type), new Rdf\Resource(Vocabulary\Graphity::WebApplicationException)));
 
         return $model;
     }
