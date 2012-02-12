@@ -44,7 +44,7 @@ class Resource implements Node
      */
     public function __construct($uri = null) {
         if($uri == null) {
-            $uri = "_:" . uniqid();
+            $uri = "_:g" . uniqid();
         }
         $this->uri = $uri;
     }
