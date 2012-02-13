@@ -67,7 +67,7 @@ class FilesScanner implements Scanner
 
     /**
      * Scans a single directory.
-     .
+     *
      * @param string $path
      * 
      * @return void

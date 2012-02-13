@@ -30,7 +30,7 @@ require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphit
 require_once GRAPHITYDIR . DS . "src" . DS . "main" . DS . "php" . DS . "Graphity" . DS . "Router" . DS . "Annotation" . DS . "Consumes.php";
 
 if(count($argv) < 3) {
-    echo "Usage: " . basename($argv[0]) . " <resource-directory> <output-file-path>\n";
+    echo "Usage: " . basename($argv[0]) . " <path-to-your-namespace> <output-file-path>\n";
     exit();
 }
 
@@ -42,10 +42,17 @@ if(is_dir($outPath)) {
     exit();
 }
 
-if(! is_writable($outPath)) {
+if(!is_writable(dirname($outPath))) {
     echo "Output path should be writable.\n";
     exit();
 }
+
+if(!file_exists($outPath)) {
+    touch($outPath);
+}
+
+$loader = new \Graphity\Loader(basename($dirPath), getcwd() . DS . dirname($dirPath));
+$loader->register();
 
 $scanner = new \Graphity\Util\Scanning\FilesScanner($dirPath, true);
 $listener = new \Graphity\Router\Scanner\RouteAnnotationListener();
