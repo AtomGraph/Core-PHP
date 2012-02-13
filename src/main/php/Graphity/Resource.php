@@ -29,7 +29,7 @@ use Graphity\Rdf as Rdf;
 use Graphity\Sparql as Sparql;
 
 /**
- * HTTP Resource for subclassing.
+ * RESTful RDF Resource for subclassing.
  */
 class Resource implements ResourceInterface
 {
