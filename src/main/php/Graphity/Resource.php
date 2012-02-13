@@ -29,8 +29,7 @@ use Graphity\Rdf as Rdf;
 use Graphity\Sparql as Sparql;
 
 /**
- * An abstract HTTP Resource for subclassing. It should be specified as a base class in Propel schema.
- * If used without Propel, it should not extend BaseObject.
+ * HTTP Resource for subclassing.
  */
 class Resource implements ResourceInterface
 {
