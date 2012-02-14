@@ -90,10 +90,30 @@ class Application
             $this->router->matchResource($this->request)->process();
         } catch(\Graphity\WebApplicationException $e) {
             throw $e;
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             // wrap all other Exceptions into WAE
             throw new \Graphity\WebApplicationException($e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Returns request
+     *
+     * @return \Graphity\Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * Returns router
+     *
+     * @return \Graphity\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
     }
 }
 

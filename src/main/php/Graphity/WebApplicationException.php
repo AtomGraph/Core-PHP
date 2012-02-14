@@ -44,7 +44,8 @@ class WebApplicationException extends Exception
     
     public function __toString()
     {
-    	return sprintf("%s\n[%d] %s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $_SERVER['HTTP_REFERER'], $this->getTraceAsString()); 
+        $referer = array_key_exists('HTTP_REFERER', $_SERVER) ? $_SERVER['HTTP_REFERER'] : "";
+    	return sprintf("%s\n[%d] %s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $this->getTraceAsString()); 
     }
 
 }
