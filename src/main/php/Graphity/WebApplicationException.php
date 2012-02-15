@@ -22,6 +22,7 @@
 
 namespace Graphity;
 
+use Graphity\Util\ClientIp;
 use Graphity\Rdf;
 use Graphity\Vocabulary as Vocabulary;
 
@@ -44,8 +45,9 @@ class WebApplicationException extends Exception
     
     public function __toString()
     {
-        $referer = array_key_exists('HTTP_REFERER', $_SERVER) ? $_SERVER['HTTP_REFERER'] : "";
-    	return sprintf("%s\n[%d] %s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $this->getTraceAsString()); 
+        $referer = array_key_exists('HTTP_REFERER', $_SERVER) ? $_SERVER['HTTP_REFERER'] . "\n" : "";
+        $user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : "";
+    	return sprintf("%s\n[%d] %s\n%s%s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $user_agent, ClientIp::asString(), $this->getTraceAsString()); 
     }
 
 }
