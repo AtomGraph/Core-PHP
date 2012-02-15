@@ -18,12 +18,12 @@ Supports JAX-RS-style RESTful API:
 
 Further implementation of missing JAX-RS features is planned.
 
-More on JAX-RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX*RS+1.0+Features
+More on JAX-RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX-RS+1.0+Features
 
 RDF API
 -------
 
-Supports Jena-style object*oriented RDF API:
+Supports Jena-style object-oriented RDF API:
 
 * `Model`
     * RDF/XML (DOM) serialization
@@ -98,7 +98,7 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
             }
         }
 
-    Note: @Produces/@Consumes annotations are not yet supported, but we recommend adding them for future compatibility.
+    Note: `@Produces`/`@Consumes` annotations are not yet supported, but we recommend adding them for future compatibility.
 
 4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route file, for example (paths are relative to project root in this case):
 
