@@ -16,8 +16,9 @@ Supports JAX-RS-style RESTful API:
 * `UriBuilder` for building URIs out of components
 * ResponseBuilder` for building `Response` objects
 
-Further implementation of missing JAX*RS features is planned.
-More on JAX*RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX*RS+1.0+Features
+Further implementation of missing JAX-RS features is planned.
+
+More on JAX-RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX*RS+1.0+Features
 
 RDF API
 -------
@@ -51,55 +52,57 @@ To create a Graphity PHP application:
 1.  Checkout or extract graphity-core into `/lib/graphity-core` or similar folder in your project.
     We recommend choosing the latest version tag on GitHub.
 
-    Note: we also strongly recommend Maven directory structure, as it will be easier to share reusable resources with the Java version in the future. More on Maven Standard Directory Layout:
+    Note: we also strongly recommend Maven directory structure, as it will be easier to share reusable resources with the Java version in the future.
+
+    More on Maven Standard Directory Layout:
 http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html
 
 2.  Create some Resource class that imports and extends Graphity\Resource, for example:
 
-    namespace My;
+        namespace My;
 
-    use Graphity\Response;
-    use Graphity\ResponseBuilder;
-    use Graphity\View\ContentType;
+        use Graphity\Response;
+        use Graphity\ResponseBuilder;
+        use Graphity\View\ContentType;
 
-    class Resource extends \Graphity\Resource
+        class Resource extends \Graphity\Resource
 
     Note: we strongly recommend using PHP namespaces with the standard folder layout (in Maven structure, that would be within the `src/main/php` folder). More ont the standard autoloader layout:
     https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
 
 3.  Annotate the class with `@Path` and methods with `@GET`/`@POST` etc., for example:
 
-    namespace My;
+        namespace My;
 
-    use Graphity\Response;
-    use Graphity\ResponseBuilder;
-    use Graphity\View\ContentType;
+        use Graphity\Response;
+        use Graphity\ResponseBuilder;
+        use Graphity\View\ContentType;
 
-    /** 
-     * @Path("/{path}")
-     */
-    class Resource extends \Graphity\Resource
-    {
-
-        /**
-         * @GET
-         * @Produces("text/html")
+        /** 
+         * @Path("/{path}")
          */
-        public function getResponse()
+        class Resource extends \Graphity\Resource
         {
-            return ResponseBuilder::newInstance()->
-                entity("<html>Hello world!</html>")->
-                status(Response::SC_OK)->
-                type(ContentType::TEXT_HTML)->
-                build();
+
+            /**
+             * @GET
+             * @Produces("text/html")
+             */
+            public function getResponse()
+            {
+                return ResponseBuilder::newInstance()->
+                    entity("<html>Hello world!</html>")->
+                    status(Response::SC_OK)->
+                    type(ContentType::TEXT_HTML)->
+                    build();
+            }
         }
-    }
 
     Note: @Produces/@Consumes annotations are not yet supported, but we recommend adding them for future compatibility.
 
 4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route file, for example (paths are relative to project root in this case):
 
-    $ php lib/graphity-core/bin/route_mapper.php src/main/php/My src/main/php/routes.php
+        $ php lib/graphity-core/bin/route_mapper.php src/main/php/My src/main/php/routes.php
 
     This should generate a route file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
     Note: this does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.
