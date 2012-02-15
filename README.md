@@ -52,9 +52,7 @@ To create a Graphity PHP application:
 1.  Checkout or extract graphity-core into `/lib/graphity-core` or similar folder in your project.
     We recommend choosing the latest version tag on GitHub.
 
-    Note: we also strongly recommend Maven directory structure, as it will be easier to share reusable resources with the Java version in the future.
-
-    More on Maven Standard Directory Layout:
+    Note: we also strongly recommend Maven directory structure, as it will be easier to share reusable resources with the Java version in the future. More on Maven Standard Directory Layout:
 http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html
 
 2.  Create some Resource class that imports and extends Graphity\Resource, for example:
@@ -100,7 +98,7 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
 
     Note: PHP annotations must be embedded in `/* */` comment blocks.
 
-    Note: `@Produces`/`@Consumes` annotations are not yet supported, but we recommend adding them for future compatibility.
+    Note: `@Produces`/`@Consumes` annotations are not yet fully supported, but we recommend adding them for future compatibility.
 
 4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route file, for example (paths are relative to project root in this case):
 
@@ -110,6 +108,19 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
     Note: this does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.
 
 5. Implement a subclass of `Graphity\Application`:
+
+Documentation
+=============
+
+We need to do some work on this... Check out our [issues](https://github.com/Graphity/graphity-core/issues) so far.
+
+Papers & presentations
+----------------------
+
+W3C "Linked Enterprise Data Patterns" workshop http://www.w3.org/2011/09/LinkedData/
+
+* Graphity position paper http://www.w3.org/2011/09/LinkedData/ledp2011_submission_1.pdf
+* Graphity presentation http://semantic-web.dk/presentations/LEDP2011.pdf
 
 Libraries
 =========
