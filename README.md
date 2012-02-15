@@ -122,10 +122,15 @@ W3C "Linked Enterprise Data Patterns" workshop http://www.w3.org/2011/09/LinkedD
 * Graphity position paper http://www.w3.org/2011/09/LinkedData/ledp2011_submission_1.pdf
 * Graphity presentation http://semantic-web.dk/presentations/LEDP2011.pdf
 
+License
+=======
+
+Graphity core is licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+
 Libraries
 =========
 
-Graphity PHP uses following 3rd party libraries:
+Graphity PHP core uses following 3rd party libraries:
 
 1.  Addendum (for annotation parsing)
     http://code.google.com/p/addendum/
