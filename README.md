@@ -11,6 +11,7 @@ JAX-RS
 ------
 
 Supports JAX-RS-style RESTful API:
+
 * resource annotations like `@Path` and `@GET`
 * `UriBuilder` for building URIs out of components
 * ResponseBuilder` for building `Response` objects
@@ -21,7 +22,8 @@ More on JAX*RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX*RS+1.0+F
 RDF API
 -------
 
-Supports Jena*style object*oriented RDF API:
+Supports Jena-style object*oriented RDF API:
+
 * `Model`
     * RDF/XML (DOM) serialization
     * Turtle serialization
@@ -35,6 +37,7 @@ Utilities
 ---------
 
 Includes utility classes for dealing with SPARQL, RDF/XML, and XSLT:
+
 * `Repository` for remote SPARQL 1.1 endpoint access
 * `QueryBuilder` for building SPARQL queries
 * `XSLTBuilder` for building XSLT transformations
