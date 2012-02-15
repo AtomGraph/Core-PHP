@@ -45,7 +45,9 @@ class WebApplicationException extends Exception
     public function __toString()
     {
         $referer = array_key_exists('HTTP_REFERER', $_SERVER) ? $_SERVER['HTTP_REFERER'] : "";
-    	return sprintf("%s\n[%d] %s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $this->getTraceAsString()); 
+        $user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : "";
+        $ip = getenv("HTTP_CLIENT_IP") ? getenv("REMOTE_ADDR") : "";
+    	return sprintf("%s\n[%d] %s\n%s\n%s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $user_agent, $ip, $this->getTraceAsString()); 
     }
 
 }
