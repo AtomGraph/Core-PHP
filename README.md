@@ -11,9 +11,9 @@ JAX-RS
 ------
 
 Supports JAX-RS-style RESTful API:
-*   resource annotations like `@Path` and `@GET`
-*   `UriBuilder` for building URIs out of components
-*   ResponseBuilder` for building `Response` objects
+* resource annotations like `@Path` and `@GET`
+* `UriBuilder` for building URIs out of components
+* ResponseBuilder` for building `Response` objects
 
 Further implementation of missing JAX*RS features is planned.
 More on JAX*RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX*RS+1.0+Features
@@ -22,12 +22,12 @@ RDF API
 -------
 
 Supports Jena*style object*oriented RDF API:
-*   `Model`
-    *   RDF/XML (DOM) serialization
-    *   Turtle serialization
-*   `Statement`
-*   `Resource`
-*   `Literal`
+* `Model`
+    * RDF/XML (DOM) serialization
+    * Turtle serialization
+* `Statement`
+* `Resource`
+* `Literal`
 
 More on Apache Jena: http://incubator.apache.org/jena/
 
@@ -35,10 +35,10 @@ Utilities
 ---------
 
 Includes utility classes for dealing with SPARQL, RDF/XML, and XSLT:
-*   `Repository` for remote SPARQL 1.1 endpoint access
-*   `QueryBuilder` for building SPARQL queries
-*   `XSLTBuilder` for building XSLT transformations
-*   `DOM2Model` for converting RDF/XML to Model (reverse of `Model::toDOM()`)
+* `Repository` for remote SPARQL 1.1 endpoint access
+* `QueryBuilder` for building SPARQL queries
+* `XSLTBuilder` for building XSLT transformations
+* `DOM2Model` for converting RDF/XML to Model (reverse of `Model::toDOM()`)
 
 Usage
 =====
@@ -101,4 +101,4 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
     This should generate a route file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
     Note: this does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.
 
-5. Implement a subclass of Graphity\Application:
+5. Implement a subclass of `Graphity\Application`:
