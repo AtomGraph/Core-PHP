@@ -14,7 +14,7 @@ Supports JAX-RS-style RESTful API:
 
 * resource annotations like `@Path` and `@GET`
 * `UriBuilder` for building URIs out of components
-* ResponseBuilder` for building `Response` objects
+* `ResponseBuilder` for building `Response` objects
 
 Further implementation of missing JAX-RS features is planned.
 
