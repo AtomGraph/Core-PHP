@@ -98,6 +98,8 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
             }
         }
 
+    Note: PHP annotations must be embedded in `/* */` comment blocks.
+
     Note: `@Produces`/`@Consumes` annotations are not yet supported, but we recommend adding them for future compatibility.
 
 4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route file, for example (paths are relative to project root in this case):
@@ -108,3 +110,11 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
     Note: this does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.
 
 5. Implement a subclass of `Graphity\Application`:
+
+Libraries
+=========
+
+Graphity PHP uses following 3rd party libraries:
+
+1.  Addendum (for annotation parsing)
+    http://code.google.com/p/addendum/
