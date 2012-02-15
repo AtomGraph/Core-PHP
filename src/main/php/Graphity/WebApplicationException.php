@@ -22,6 +22,7 @@
 
 namespace Graphity;
 
+use Graphity\Util\ClientIp;
 use Graphity\Rdf;
 use Graphity\Vocabulary as Vocabulary;
 
@@ -46,8 +47,7 @@ class WebApplicationException extends Exception
     {
         $referer = array_key_exists('HTTP_REFERER', $_SERVER) ? $_SERVER['HTTP_REFERER'] : "";
         $user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : "";
-        $ip = getenv("HTTP_CLIENT_IP") ? getenv("REMOTE_ADDR") : "";
-    	return sprintf("%s\n[%d] %s\n%s\n%s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $user_agent, $ip, $this->getTraceAsString()); 
+    	return sprintf("%s\n[%d] %s\n%s\n%s\n%s\n%s", $_SERVER['REQUEST_URI'], $this->getCode(), $this->getMessage(), $referer, $user_agent, ClientIp::asString(), $this->getTraceAsString()); 
     }
 
 }
