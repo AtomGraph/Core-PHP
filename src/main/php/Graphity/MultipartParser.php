@@ -100,8 +100,7 @@ class MultipartParser
         $line = $this->readLine();
 
         if ($line === null) return null;
-        //else if (strlen($line) == 0) return null;
-//var_dump($line);
+
         while ($line !== null && strlen($line) > 0)
         {
             $nextLine = null;
@@ -114,28 +113,25 @@ class MultipartParser
                     $line .= $nextLine;
                 else $getNextLine = false;
             }
-//var_dump($line);
-//print "!!!!!!!!!!!";
+
             $headers[] = $line;
             $line = $nextLine;
         }
-//var_dump($headers);
+
         if ($line === null) return null;
 
         $name = null;
         $filename = null;
         $origname = null;
         $contentType = "text/plain";  // rfc1867 says this is the default
-//var_dump($headers);
+
         foreach ($headers as $headerline)
         {
-//var_dump($headerline);
-
             if (stripos($headerline, "content-disposition:") === 0)
             {
                 $dispInfo = $this->extractDispositionInfo($headerline);
                 // $disposition = $dispInfo[0];
-//var_dump($dispInfo);
+
                 $name = $dispInfo[1];
                 $filename = $dispInfo[2];
                 $origname = $dispInfo[3];
@@ -146,7 +142,7 @@ class MultipartParser
                 if ($type != null) $contentType = $type;
             }
         }
-//var_dump($name);
+
         if ($filename == null) return new ParamPart($name, $this->in, $this->boundary, $this->encoding);
         else
         {

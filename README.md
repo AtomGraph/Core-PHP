@@ -41,6 +41,8 @@ Includes utility classes for dealing with SPARQL, RDF/XML, and XSLT:
 
 * `Repository` for remote SPARQL 1.1 endpoint access
 * `QueryBuilder` for building SPARQL queries
+* `RDFForm` for reading requests in RDF/POST encoding. More on RDF/POST: http://www.lsrn.org/semweb/rdfpost.html
+* `MultipartParser` and `MultipartRequest` for reading `multipart/form-data` requests
 * `XSLTBuilder` for building XSLT transformations
 * `DOM2Model` for converting RDF/XML to Model (reverse of `Model::toDOM()`)
 
