@@ -7,6 +7,10 @@ Java version is in the works.
 Description
 ===========
 
+Graphity is a fully object-oriented PHP framework for building flexible [REST](http://en.wikipedia.org/wiki/REST)ful, [Semantic Web](http://en.wikipedia.org/wiki/Semantic_web), and/or [Linked Data](http://en.wikipedia.org/wiki/Linked_data) web applications.
+
+Graphity tries *not* to invent new conventions, but instead to combine existing ones. It is based on W3C standards and reuses Java APIs where possible.
+
 JAX-RS
 ------
 
@@ -98,11 +102,11 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
 
     *`@Produces`/`@Consumes` annotations are not yet fully supported, but we recommend adding them for future compatibility.*
 
-4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route map file, for example (paths are relative to project root in this case):
+4.  Run `/lib/graphity-core/bin/route_mapper.php` specifying the root folder of your namespace and the location of your route map file, for example (paths are relative to project root in this case):
 
         $ php lib/graphity-core/bin/route_mapper.php src/main/php/My src/main/php/routes.php
 
-    This should generate a route map file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
+    This should scan your resource classes and generate a route map file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
     *This does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.*
 
 5. Implement a subclass of `Graphity\Application`:
@@ -154,7 +158,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
             RequestHeader set Content-Type %{NEW_CONTENT_TYPE}e env=NEW_CONTENT_TYPE
         </Location>
 
-8. Ready? _Launch!_ Open [http://localhost/hello?what=world] in your browser and you should see `Hello world!` printed out for you.
+8. Ready? _Launch!_ Open [http://localhost/hello?what=world](http://localhost/hello?what=world) in your browser and you should see `Hello world!` printed out for you.
 *Naturally the base URI in this example depends on your webserver and/or virtual host configuration.*
 
 Documentation
