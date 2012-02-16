@@ -50,7 +50,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
 1.  Checkout or extract graphity-core into `/lib/graphity-core` or similar folder in your project.
     We recommend choosing the latest version tag on GitHub.
 
-    *We strongly recommend [Maven Standard Directory Layout](http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html), as it will be easier to share reusable resources with the Java version in the future.*
+    *We strongly recommend [Maven Standard Directory Layout](http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html), as it will be easier to share reusable resources with the Java version in the future.* It is used in the following examples.
 
 2.  Create some resource class that imports and extends `Graphity\Resource`, for example:
 
@@ -62,7 +62,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
 
         class Resource extends \Graphity\Resource
 
-    *We strongly recommend using PHP namespaces with the [standard folder layout](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) (in Maven structure, that would be within the `src/main/php` folder).*
+    *We strongly recommend using PHP namespaces with the [standard folder layout](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md).* In Maven structure, that would be within the `src/main/php` folder). It is used in the following examples.
 
 3.  Annotate the class with `@Path` and methods with `@GET`/`@POST` etc., for example:
 
@@ -98,11 +98,11 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
 
     *`@Produces`/`@Consumes` annotations are not yet fully supported, but we recommend adding them for future compatibility.*
 
-4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route file, for example (paths are relative to project root in this case):
+4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route map file, for example (paths are relative to project root in this case):
 
         $ php lib/graphity-core/bin/route_mapper.php src/main/php/My src/main/php/routes.php
 
-    This should generate a route file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
+    This should generate a route map file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
     *This does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.*
 
 5. Implement a subclass of `Graphity\Application`:
@@ -134,8 +134,8 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
         $app = new My\Application();
         $app->run();
 
-    The `Application::run()` method will do the processing for you, executing the whole HTTP workflow from receiving a `Graphity\Request` to writing out a `Graphity\Response`.
-    Later you might want to override the `Graphity\Application::run()` method to include a `try`/`catch` block for `Graphity\WebApplicationException` handling.
+    The `Graphity\Application::run()` method will do the processing for you, executing the whole HTTP workflow from receiving a `Graphity\Request` to writing out a `Graphity\Response`.
+    Later you might want to override it with `My\Application::run()` method to include a `try`/`catch` block for `Graphity\WebApplicationException` handling.
 
     *Both `Application` superclass and subclass need to be included here to bootstrap the framework.*
 
@@ -146,7 +146,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
         RewriteEngine On
         RewriteRule ^(.*)$ index.php/$1 [L]
 
-    *`multipart/form-data` requests should not to be accessed via PHP's `$_FILE` or similar methods, and instead used with Graphity `MultipartRequest` and `MultipartParser` classes.*
+    * Requests of `multipart/form-data` content type should not be accessed via PHP's `$_FILE` or similar methods, and instead used with Graphity's `MultipartRequest` and `MultipartParser` classes.*
     The following instructions make this possible by setting request content type to `multipart/form-data-alternate` before it is passed to PHP, and can be placed in `vhost.conf`:
 
         <Location />
@@ -154,7 +154,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
             RequestHeader set Content-Type %{NEW_CONTENT_TYPE}e env=NEW_CONTENT_TYPE
         </Location>
 
-8. Ready? Launch! Open http://localhost/hello?what=world in your browser and you should see `Hello world!` printed out for you.
+8. Ready? Launch! Open [http://localhost/hello?what=world] in your browser and you should see `Hello world!` printed out for you.
 *Naturally the base URI in this example depends on your webserver and/or virtual host configuration.*
 
 Documentation
