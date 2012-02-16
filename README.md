@@ -10,7 +10,7 @@ Description
 JAX-RS
 ------
 
-Supports JAX-RS-style RESTful API:
+Supports [JAX-RS](https://wikis.oracle.com/display/Jersey/Overview+of+JAX-RS+1.0+Features)-style RESTful API:
 
 * resource annotations like `@Path` and `@GET`
 * `UriBuilder` for building URIs out of components (includes implementation in JavaScript)
@@ -18,12 +18,10 @@ Supports JAX-RS-style RESTful API:
 
 Further implementation of missing JAX-RS features is planned.
 
-More on JAX-RS: https://wikis.oracle.com/display/Jersey/Overview+of+JAX-RS+1.0+Features
-
 RDF API
 -------
 
-Supports Jena-style object-oriented RDF API:
+Supports [Jena](http://incubator.apache.org/jena/)-style object-oriented RDF API:
 
 * `Model`
     * RDF/XML (DOM) serialization
@@ -32,30 +30,27 @@ Supports Jena-style object-oriented RDF API:
 * `Resource`
 * `Literal`
 
-More on Apache Jena: http://incubator.apache.org/jena/
-
 Utilities
 ---------
 
-Includes utility classes for dealing with SPARQL, RDF/XML, and XSLT:
+Includes utility classes for dealing with [SPARQL](http://www.w3.org/TR/sparql11-query/), [RDF/XML](http://www.w3.org/TR/REC-rdf-syntax/), and [XSLT](http://www.w3.org/TR/xslt):
 
-* `Repository` for remote SPARQL 1.1 endpoint access. More on SPARQL: http://www.w3.org/TR/sparql11-query/
+* `Repository` for remote SPARQL 1.1 endpoint access
 * `QueryBuilder` for building SPARQL queries
-* `RDFForm` for reading requests in RDF/POST encoding. More on RDF/POST: http://www.lsrn.org/semweb/rdfpost.html
-* `MultipartParser` and `MultipartRequest` for reading `multipart/form-data` requests
-* `XSLTBuilder` for building XSLT transformations
+* `RDFForm` for reading requests in [RDF/POST](http://www.lsrn.org/semweb/rdfpost.html) encoding
+* `MultipartParser` and `MultipartRequest` for reading `multipart/form-data` requests (PHP port of O'Reilly's [Multipart classes](http://www.servlets.com/cos/))
+* `XSLTBuilder` for building XSLT transformations *(PHP's [XSL extension](http://php.net/manual/en/book.xsl.php) must be enabled)*
 * `DOM2Model` for converting RDF/XML to Model (reverse of `Model::toDOM()`)
 
 Usage
 =====
 
-To create a Graphity PHP application:
+To create a Graphity PHP application, you need to follow similar steps as in creating JAX-RS webapp, plus some extra steps because of PHP's interpreted and per-request nature:
 
 1.  Checkout or extract graphity-core into `/lib/graphity-core` or similar folder in your project.
     We recommend choosing the latest version tag on GitHub.
 
-    Note: we also strongly recommend Maven directory structure, as it will be easier to share reusable resources with the Java version in the future. More on Maven Standard Directory Layout:
-http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html
+    *We strongly recommend [Maven Standard Directory Layout](http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html), as it will be easier to share reusable resources with the Java version in the future.*
 
 2.  Create some resource class that imports and extends `Graphity\Resource`, for example:
 
@@ -67,8 +62,7 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
 
         class Resource extends \Graphity\Resource
 
-    Note: we strongly recommend using PHP namespaces with the standard folder layout (in Maven structure, that would be within the `src/main/php` folder). More ont the standard autoloader layout:
-    https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+    *We strongly recommend using PHP namespaces with the [standard folder layout](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) (in Maven structure, that would be within the `src/main/php` folder).*
 
 3.  Annotate the class with `@Path` and methods with `@GET`/`@POST` etc., for example:
 
@@ -79,7 +73,7 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
         use Graphity\View\ContentType;
 
         /** 
-         * @Path("/{path}")
+         * @Path("/hello")
          */
         class Resource extends \Graphity\Resource
         {
@@ -91,25 +85,77 @@ http://maven.apache.org/guides/introduction/introduction-to-the-standard-directo
             public function getResponse()
             {
                 return ResponseBuilder::newInstance()->
-                    entity("<html>Hello world!</html>")->
+                    entity("<html>Hello ". $this->getRequest()->getParameter("what") ."!</html>")->
                     status(Response::SC_OK)->
                     type(ContentType::TEXT_HTML)->
                     build();
             }
         }
 
-    Note: PHP annotations must be embedded in `/* */` comment blocks.
+    This class would match GET requests on `/hello` path and print a statement depending on the `what` query parameter value.
 
-    Note: `@Produces`/`@Consumes` annotations are not yet fully supported, but we recommend adding them for future compatibility.
+    *PHP annotations must be embedded in `/* */` comment blocks.*
+
+    *`@Produces`/`@Consumes` annotations are not yet fully supported, but we recommend adding them for future compatibility.*
 
 4.  Run `/lib/graphity-core/bin/route_mapper.php` from the root folder of your namespace, specifying the location of your route file, for example (paths are relative to project root in this case):
 
         $ php lib/graphity-core/bin/route_mapper.php src/main/php/My src/main/php/routes.php
 
     This should generate a route file, which is used internally by Graphity to match request URIs against JAX-RS annotations.
-    Note: this does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.
+    *This does not happen dynamically (as of yet), you have to re-map routes with `route_mapper.php` every time your annotations change.*
 
 5. Implement a subclass of `Graphity\Application`:
+
+        namespace My;
+
+        class Application extends \Graphity\Application
+        {
+
+            public function __construct()
+            {
+                parent::__construct(include(dirname(dirname(__FILE__)) . "/routes.php"));
+
+                $loader = new \Graphity\Loader("My", dirname(dirname(__FILE__)));
+                $loader->register(); 
+            }
+
+        }
+
+    This class initializes route map and `Graphity\Loader` and can be used for custom initializations.
+
+6. Make an entry point to your `Application` like `index.php` and put it under `src/main/webapp`:
+
+        define('ROOTDIR', dirname(dirname(dirname(dirname(__FILE__)))));
+
+        require_once(ROOTDIR . '/lib/graphity-core/src/main/php/Graphity/Application.php');
+        require_once(ROOTDIR . '/src/main/php/My/Application.php');
+
+        $app = new My\Application();
+        $app->run();
+
+    The `Application::run()` method will do the processing for you, executing the whole HTTP workflow from receiving a `Graphity\Request` to writing out a `Graphity\Response`.
+    Later you might want to override the `Graphity\Application::run()` method to include a `try`/`catch` block for `Graphity\WebApplicationException` handling.
+
+    *Both `Application` superclass and subclass need to be included here to bootstrap the framework.*
+
+    *This should be the single and only entry point to your Graphity web application.*
+
+7. Fix URL rewriting by adding `.htaccess` configuration under `src/main/webapp`:
+
+        RewriteEngine On
+        RewriteRule ^(.*)$ index.php/$1 [L]
+
+    *`multipart/form-data` requests should not to be accessed via PHP's `$_FILE` or similar methods, and instead used with Graphity `MultipartRequest` and `MultipartParser` classes.*
+    The following instructions make this possible by setting request content type to `multipart/form-data-alternate` before it is passed to PHP, and can be placed in `vhost.conf`:
+
+        <Location />
+            SetEnvIf Content-Type ^(multipart/form-data)(.*) NEW_CONTENT_TYPE=multipart/form-data-alternate$2 OLD_CONTENT_TYPE=$1$2
+            RequestHeader set Content-Type %{NEW_CONTENT_TYPE}e env=NEW_CONTENT_TYPE
+        </Location>
+
+8. Ready? Launch! Open http://localhost/hello?what=world in your browser and you should see `Hello world!` printed out for you.
+*Naturally the base URI in this example depends on your webserver and/or virtual host configuration.*
 
 Documentation
 =============
@@ -119,20 +165,19 @@ We need to do some work on this... Check out our [issues](https://github.com/Gra
 Papers & presentations
 ----------------------
 
-W3C "Linked Enterprise Data Patterns" workshop http://www.w3.org/2011/09/LinkedData/
+W3C ["Linked Enterprise Data Patterns" workshop](http://www.w3.org/2011/09/LinkedData/)
 
-* Graphity position paper http://www.w3.org/2011/09/LinkedData/ledp2011_submission_1.pdf
-* Graphity presentation http://semantic-web.dk/presentations/LEDP2011.pdf
+* [Graphity position paper](http://www.w3.org/2011/09/LinkedData/ledp2011_submission_1.pdf)
+* [Graphity presentation](http://semantic-web.dk/presentations/LEDP2011.pdf)
 
 License
 =======
 
-Graphity core is licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+Graphity core is licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 Libraries
 =========
 
 Graphity PHP core uses following 3rd party libraries:
 
-1.  Addendum (for annotation parsing)
-    http://code.google.com/p/addendum/
+1.  [Addendum](http://code.google.com/p/addendum/) (for annotation parsing)
