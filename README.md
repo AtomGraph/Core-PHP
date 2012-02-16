@@ -66,7 +66,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
 
         class Resource extends \Graphity\Resource
 
-    *We strongly recommend using PHP namespaces with the [standard folder layout](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md).* In Maven structure, that would be within the `src/main/php` folder). It is used in the following examples.
+    *We strongly recommend using PHP namespaces with the [standard folder layout](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md).* In Maven structure, that would be within the `src/main/php` folder. It is used in the following examples.
 
 3.  Annotate the class with `@Path` and methods with `@GET`/`@POST` etc., for example:
 
@@ -184,4 +184,6 @@ Libraries
 
 Graphity PHP core uses following 3rd party libraries:
 
-1.  [Addendum](http://code.google.com/p/addendum/) (for annotation parsing)
+1. [Addendum](http://code.google.com/p/addendum/) (for annotation parsing)
+
+2. [libphutil](https://github.com/facebook/libphutil) (`Filesystem` class)
