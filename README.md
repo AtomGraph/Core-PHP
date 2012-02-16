@@ -13,7 +13,7 @@ JAX-RS
 Supports JAX-RS-style RESTful API:
 
 * resource annotations like `@Path` and `@GET`
-* `UriBuilder` for building URIs out of components
+* `UriBuilder` for building URIs out of components (includes implementation in JavaScript)
 * `ResponseBuilder` for building `Response` objects
 
 Further implementation of missing JAX-RS features is planned.
