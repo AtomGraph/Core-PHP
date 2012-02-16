@@ -185,4 +185,4 @@ Libraries
 Graphity PHP core uses following 3rd party libraries:
 
 1. [Addendum](http://code.google.com/p/addendum/) (for annotation parsing)
-2. [libphutil](https://github.com/facebook/libphutil) (`Filesystem` class)
+2. [libphutil](https://github.com/facebook/libphutil) (`PhutilURI` class)
