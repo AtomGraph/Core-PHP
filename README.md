@@ -39,7 +39,7 @@ Utilities
 
 Includes utility classes for dealing with SPARQL, RDF/XML, and XSLT:
 
-* `Repository` for remote SPARQL 1.1 endpoint access
+* `Repository` for remote SPARQL 1.1 endpoint access. More on SPARQL: http://www.w3.org/TR/sparql11-query/
 * `QueryBuilder` for building SPARQL queries
 * `RDFForm` for reading requests in RDF/POST encoding. More on RDF/POST: http://www.lsrn.org/semweb/rdfpost.html
 * `MultipartParser` and `MultipartRequest` for reading `multipart/form-data` requests
@@ -57,7 +57,7 @@ To create a Graphity PHP application:
     Note: we also strongly recommend Maven directory structure, as it will be easier to share reusable resources with the Java version in the future. More on Maven Standard Directory Layout:
 http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html
 
-2.  Create some Resource class that imports and extends Graphity\Resource, for example:
+2.  Create some resource class that imports and extends `Graphity\Resource`, for example:
 
         namespace My;
 
