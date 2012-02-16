@@ -87,7 +87,7 @@ class Application
     /**
      * Processes the HTTP Request. Finds an appropriate Resource, passes the control to it, and displays the resulting Response.
      */
-    public function process()
+    public function run()
     {
         try {
             $resource = $this->router->matchResource($this->request);
