@@ -146,7 +146,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
         RewriteEngine On
         RewriteRule ^(.*)$ index.php/$1 [L]
 
-    * Requests of `multipart/form-data` content type should not be accessed via PHP's `$_FILE` or similar methods, and instead used with Graphity's `MultipartRequest` and `MultipartParser` classes.*
+    *Requests with `multipart/form-data` content type should not be accessed via PHP's `$_FILE` or similar methods, and instead used with Graphity's `MultipartRequest` and `MultipartParser` classes.*
     The following instructions make this possible by setting request content type to `multipart/form-data-alternate` before it is passed to PHP, and can be placed in `vhost.conf`:
 
         <Location />
@@ -154,7 +154,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
             RequestHeader set Content-Type %{NEW_CONTENT_TYPE}e env=NEW_CONTENT_TYPE
         </Location>
 
-8. Ready? Launch! Open [http://localhost/hello?what=world] in your browser and you should see `Hello world!` printed out for you.
+8. Ready? _Launch!_ Open [http://localhost/hello?what=world] in your browser and you should see `Hello world!` printed out for you.
 *Naturally the base URI in this example depends on your webserver and/or virtual host configuration.*
 
 Documentation
