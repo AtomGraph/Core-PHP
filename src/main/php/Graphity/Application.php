@@ -84,10 +84,29 @@ class Application
         $this->router = new \Graphity\Router($routeMap);
     }
 
+    /**
+     * Processes the HTTP Request. Finds an appropriate Resource, passes the control to it, and displays the resulting Response.
+     */
     public function process()
     {
         try {
-            $this->router->matchResource($this->request)->process();
+            $resource = $this->router->matchResource($this->request);
+
+            $ref = new \ReflectionAnnotatedClass($resource);
+            if($ref->hasAnnotation('Singleton') === false && $resource->exists() === false) {
+                throw new WebApplicationException("Resource not found", Response::SC_NOT_FOUND);
+            }
+            if (!$resource->authorize()) {
+                throw new WebApplicationException("Access denied", Response::SC_FORBIDDEN);
+            }
+
+            $methodName = $resource->getRouter()->matchMethod($resource);
+            $response = $resource->$methodName();
+            if($response === null) {
+                throw new WebApplicationException("Method not allowed", Response::SC_METHOD_NOT_ALLOWED);
+            }
+            $response->commit(); // write status and headers
+            $response->flushBuffer();
         } catch(\Graphity\WebApplicationException $e) {
             throw $e;
         } catch(\Exception $e) {

@@ -174,30 +174,6 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Processes the HTTP Request. Finds an appropriate Resource, passes the control to it, and displays the resulting View.
-     */
-    public final function process()
-    {
-        $ref = new \ReflectionAnnotatedClass($this);
-        if($ref->hasAnnotation('Singleton') === false && $this->exists() === false) {
-            throw new WebApplicationException("Resource not found", Response::SC_NOT_FOUND);
-        }
-        if (!$this->authorize()) {
-            throw new WebApplicationException("Access denied", Response::SC_FORBIDDEN);
-        }
-
-        $methodName = $this->getRouter()->matchMethod($this);
-        $response = $this->$methodName();
-        if($response === null) {
-            new WebApplicationException("Undefined response instance", Response::SC_INTERNAL_SERVER_ERROR);
-        }
-        $this->setResponse($response);
-
-        $this->getResponse()->commit(); // write status and headers
-        $this->getResponse()->flushBuffer();
-    }
-
-    /**
      * Check if agent has access to resource.
      * 
      * @return boolean
