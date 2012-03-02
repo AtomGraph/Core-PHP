@@ -76,7 +76,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
         use Graphity\ResponseBuilder;
         use Graphity\View\ContentType;
 
-        /** 
+        /**
          * @Path("/hello")
          */
         class Resource extends \Graphity\Resource
@@ -121,7 +121,7 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
                 parent::__construct(include(dirname(dirname(__FILE__)) . "/routes.php"));
 
                 $loader = new \Graphity\Loader("My", dirname(dirname(__FILE__)));
-                $loader->register(); 
+                $loader->register();
             }
 
         }
@@ -185,4 +185,3 @@ Libraries
 Graphity PHP core uses following 3rd party libraries:
 
 1. [Addendum](http://code.google.com/p/addendum/) (for annotation parsing)
-2. [libphutil](https://github.com/facebook/libphutil) (`PhutilURI` class)
