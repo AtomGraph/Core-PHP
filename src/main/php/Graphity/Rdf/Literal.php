@@ -27,7 +27,7 @@ namespace Graphity\Rdf;
  * 
  * Based on Jena: http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/rdf/model/Literal.html
  */
-class Literal implements Node
+class Literal implements NodeInterface
 {
 
     /**
@@ -140,7 +140,7 @@ class Literal implements Node
     }
 
     /* (non-PHPdoc)
-     * @see RDFNode::isAnonymous()
+     * @see Rdf\Node::isAnonymous()
      */
     public function isAnonymous()
     {
@@ -148,7 +148,7 @@ class Literal implements Node
     }
 
     /* (non-PHPdoc)
-     * @see RDFNode::isLiteral()
+     * @see Rdf\Node::isLiteral()
      */
     public function isLiteral()
     {
@@ -156,7 +156,7 @@ class Literal implements Node
     }
 
     /* (non-PHPdoc)
-     * @see RDFNode::isResource()
+     * @see Rdf\Node::isResource()
      */
     public function isResource()
     {
@@ -164,7 +164,7 @@ class Literal implements Node
     }
 
     /* (non-PHPdoc)
-     * @see RDFNode::isURIResource()
+     * @see Rdf\Node::isURIResource()
      */
     public function isURIResource()
     {
@@ -172,7 +172,7 @@ class Literal implements Node
     }
 
     /* (non-PHPdoc)
-     * @see RDFNode::__toString()
+     * @see Rdf\Node::__toString()
      */
     public function __toString()
     {

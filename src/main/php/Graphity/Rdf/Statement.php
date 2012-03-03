@@ -40,7 +40,7 @@ class Statement implements \ArrayAccess
     protected $predicate;
     
     /**
-     * @var Node
+     * @var NodeInterface
      */
     protected $object;
     
@@ -51,7 +51,7 @@ class Statement implements \ArrayAccess
      * @param string $predicate
      * @param string|Literal $object
      */
-    public function __construct(Resource $subject, Resource $predicate, Node $object) {
+    public function __construct(Resource $subject, Resource $predicate, NodeInterface $object) {
         $this->subject = $subject;
         $this->predicate = $predicate;
         $this->object = $object;
@@ -94,18 +94,18 @@ class Statement implements \ArrayAccess
     }
     
     /**
-     * @param Node $object
+     * @param NodeInterface $object
      * 
      * @return Statement
      */
-    public function setObject(Node $object) {
+    public function setObject(NodeInterface $object) {
         $this->object = $object;
         
         return $this;
     }
     
     /**
-     * @return Node
+     * @return NodeInterface
      */
     public function getObject() {
         return $this->object;

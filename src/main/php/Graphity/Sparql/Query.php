@@ -81,11 +81,11 @@ class Query
      *  Set a variable value.
      *
      *  @param string $name
-     *  @param Rdf\Node $var
+     *  @param Rdf\NodeInterface $var
      *
      *  @return Query
      */
-    public function setVariable($name, Rdf\Node $var) {
+    public function setVariable($name, Rdf\NodeInterface $var) {
         $this->variableMap[$name] = $var;
 
         return $this;

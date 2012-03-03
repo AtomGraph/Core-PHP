@@ -32,8 +32,8 @@ class XSLTBuilder {
 
     private $useXSLTCache = false;
 
-    private $profileXSLT = true;
-    
+    private $profileXSLT = false;
+
     protected function __construct()
     {
         if(extension_loaded('xslcache') && !defined('PHPUNIT') && $this->useXSLTCache)

@@ -107,11 +107,11 @@ class Model implements \Iterator, \ArrayAccess
     /**
      * Return true if this Model has at least one Statement which has the resource
      *
-     * @param RDFNode $resource
+     * @param Rdf\Node $resource
      *
      * @return boolean
      */
-    public function containsResource(Node $resource) {
+    public function containsResource(NodeInterface $resource) {
        foreach($this->listOfStatements as $stmt) {
           if((string)$stmt->getSubject() === (string)$resource ||
               (string)$stmt->getPredicate() === (string)$resource ||
@@ -147,11 +147,11 @@ class Model implements \Iterator, \ArrayAccess
      * this model that have property p with value o.
      *
      * @param RDFResource $p
-     * @param RDFNode $o
+     * @param Rdf\Node $o
      *
      * @return array
      */
-    public function listResourcesWithProperty(Resource $p, Node $o = null) {
+    public function listResourcesWithProperty(Resource $p, NodeInterface $o = null) {
         $list = array();
 
         foreach($this->listOfStatements as $stmt) {
@@ -268,8 +268,8 @@ class Model implements \Iterator, \ArrayAccess
      */
     public final function toDOM()
     {
-		$doc = new \DOMDocument("1.0", "UTF-8");
-		$rdfElem = $doc->appendChild($doc->createElementNS(Rdf::NS, "rdf:RDF"));
+        $doc = new \DOMDocument("1.0", "UTF-8");
+        $rdfElem = $doc->appendChild($doc->createElementNS(Rdf::NS, "rdf:RDF"));
 
         foreach ($this->getStatements() as $stmt)
         {
