@@ -36,12 +36,19 @@ class Client extends Repository\Client
      * @var string $authToken
      */
     private $authToken = null;
+    
+    /**
+     * @var string $userId
+     */
+    private $userId = null;
 
-    public function __construct($endpointUrl, $authToken)
+    public function __construct($endpointUrl, $authToken, $userId = null)
     {
         parent::__construct($endpointUrl);
 
         $this->authToken = $authToken;
+        
+        $this->userId = $userId;
     }
 
     /**
@@ -59,6 +66,9 @@ class Client extends Repository\Client
         } else {
             $url .= "&auth_token=" . $this->getAuthToken();
         }
+        
+        if($this->userId!=null)
+        	$url .= "&user_id=" . $this->userId;
 
         return $url;
     }
