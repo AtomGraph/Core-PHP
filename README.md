@@ -148,6 +148,8 @@ To create a Graphity PHP application, you need to follow similar steps as in cre
 7. Fix URL rewriting by adding `.htaccess` configuration under `src/main/webapp`:
 
         RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_URI} !\.(js|ico|gif|jpg|png|css|swf)$ [NC]
         RewriteRule ^(.*)$ index.php/$1 [L]
 
     *Requests with `multipart/form-data` content type should not be accessed via PHP's `$_FILE` or similar methods, and instead used with Graphity's `MultipartRequest` and `MultipartParser` classes.*
